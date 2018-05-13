@@ -7,7 +7,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 /* elements */
 body {
-  font-family: "Palatino Linotype", "Vera Sans Yuanti", "STHeiti", "Microsoft YaHei", "Palatino Linotype", "NSimSun", serif;
+  font-family: "Hiragino Sans GB", Roboto, "Microsoft Yahei", Helvetica, "Helvetica Neue", "微软雅黑", Arial, sans-serif;
   color: #0A0A0A;
   font-size: 14px/160%;
   -webkit-font-smoothing: antialiased;
@@ -213,14 +213,15 @@ pre {
     font-family: "Fira Code", "Consolas", "Inconsolata", "Anonymous", "Monaco", monospace;
     background: #EEE;
     padding: 8px;
-    overflow:auto;
+    overflow: auto;
     overflow-scrolling: touch;
 }
 p code, li>code {
+    font-family: "Fira Code", "Consolas", "Inconsolata", "Anonymous", "Monaco", monospace;
     background-color:#EEEEFF;
-    border:1px solid #DDDDDD;
-    font-size:95%;
-    padding:0 0.2em;
+    border: 1px solid #DDDDDD;
+    font-size: 95%;
+    padding: 0 0.2em;
 }
 
 .pub_date {
@@ -306,46 +307,3 @@ p code, li>code {
 .vg { color: #268BD2 } /* Name.Variable.Global */
 .vi { color: #268BD2 } /* Name.Variable.Instance */
 .il { color: #2AA198 } /* Literal.Number.Integer.Long */
-
-/* for album */
-.image {
-    width: 600px;
-    height: 400px;
-}
-.swipe {
-  overflow: hidden;
-  visibility: hidden;
-  position: relative;
-}
-.swipe-wrap {
-  overflow: hidden;
-  position: relative;
-}
-.swipe-wrap > figure {
-  float:left;
-  width:100%;
-  position: relative;
-  margin: 0px;
-}
-.wrap{padding: 0px; margin: 0px;}
-
-/* various album styles */
-#album_selector a {
-    margin-right: 5px;
-}
-/* download link */
-#download_img {
-    display: none;
-    position: relative;
-    display: inline-block;
-    text-decoration:none;
-    opacity: 0.6;
-    top : -40px;
-}
-#album_selector{
-    margin-bottom: 20px;
-}
-.album_comment{
-    padding: 0px;
-    margin: 0px;
-}
