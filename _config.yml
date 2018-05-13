@@ -1,1 +1,31 @@
-theme: jekyll-theme-tactile
+# Jekyll settings file for blog.xiaket.org
+title: 年华转瞬
+email: xiaket@gmail.com
+description: 夏恺, xiaket, 读书人, Pythonista, DevOPs
+#url: "https://blog.xiaket.org"
+url: "https://xiaket.github.io"
+twitter_username: xiaket
+github_username:  xiaket
+permalink: /:year/:title:output_ext
+google_analytics: UA-119160918-1
+timezone: Australia/Melbourne
+
+# Build settings
+markdown: kramdown
+kramdown:
+  # I hate that ID.
+  auto_ids: false
+
+# minima is just a placeholder here. We are not using it.
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+exclude: ["Gemfile", "Gemfile.lock", "manage", "node_modules", "vendor/bundle/", "vendor/cache/", "vendor/gems/", "vendor/ruby/"]
+
+defaults:
+  -
+    values:
+      layout: "post"
+      lang: "en"

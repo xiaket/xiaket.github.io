@@ -1,0 +1,18 @@
+---
+layout: base
+---
+  {% include header.html %}
+  <div id='main'>
+
+    {{ content }}
+
+    <nav></nav>
+    <aside></aside>
+  </div>
+
+  <script type="text/javascript" src="/media/blog.js"></script>
+  <script>
+    window.addEventListener("load", drawLogo, true);
+    window.addEventListener("scroll", updateheight, true);
+  </script>
+{% include google-analytics.html %}
