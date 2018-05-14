@@ -6,7 +6,7 @@ lang: zh
 
 基于本人患有晚期强迫症的现实情况, 我用中文写作时所使用的标点必须是英文的. 为此, 我一直使用鼠须管. 这个输入法的词库比较硬伤, 而且使用上也有小问题, 比如我就不太敢升级它, 怕会弄坏东西. 昨天看了几篇网上的文章, 自己折腾了下, 除了解决了这个问题, 还引入了一些额外的功能.
 
-本文所有的折腾都基于[Karabiner](https://pqrs.org/osx/karabiner/)和[seil](https://pqrs.org/osx/karabiner/seil.html.en)seil.
+本文所有的折腾都基于[Karabiner](https://pqrs.org/osx/karabiner/)和[seil](https://pqrs.org/osx/karabiner/seil.html.en).
 
 首先要折腾的是中文输入法. 网上有篇文章解决了这个问题, 方法是对于中文输入法, 每次输入标点的时候, 首先按下大写锁定, 然后按下标点(这个时候标点就是英文的了), 最好再按下大写锁定, 取消大写. 这个办法略投机取巧, 不过还能接受. 具体配置方法是改Karabiner的`private.xml`. 我基本就是将那篇文章里提供的xml拿过来, 不过自己做了一些修改. 因为个人习惯而言, 我很少用键盘上右边的Shift键, 所以我去掉了所有`SHIFT_R`的映射.
 
