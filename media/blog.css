@@ -7,7 +7,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 /* elements */
 body {
-  font-family: "Hiragino Sans GB", Roboto, "Microsoft Yahei", Helvetica, "Helvetica Neue", "微软雅黑", Arial, sans-serif;
+  font-family: Roboto, Helvetica, "Hiragino Sans GB", "Microsoft Yahei", "Helvetica Neue", "微软雅黑", Arial, sans-serif;
   color: #0A0A0A;
   font-size: 14px/160%;
   -webkit-font-smoothing: antialiased;
@@ -24,18 +24,17 @@ h1 { font-size: 30px; line-height: 32px; margin-bottom: 10px; font-weight: bold;
 h2 { font-size: 24px; line-height: 26px; margin-bottom: 8px; font-weight: bold;}
 h3 { font-size: 18px; line-height: 22px; margin-bottom: 6px; }
 h4 { font-size: 16px; line-height: 18px; margin-bottom: 4px; }
-p { margin: 0 0 15px 0; }
+p { margin: 0 0 15px 0; font-size: 120%; }
 p img { margin: 0; }
 
-a, a:visited { text-decoration: none; }
-a{ color: black; }
-a:focus, a:visited { color: #666; }
-a:hover { text-decoration: underline; color: black }
-p a, p a:visited { line-height:line inherit; }
+a { color: #244382; margin: 0 4px; text-decoration: none; }
+a:visited { color: #8b8e86; }
+p a { line-height:line inherit; text-decoration: underline; }
 
 ul, ol { margin-bottom: 15; }
 ol { list-style: decimal; margin-left: 30px; }
-li { line-height: 18px; margin-bottom: 12px; }
+ul { list-style-type: square; margin-left: 30px; }
+li { line-height: 18px; margin-bottom: 12px; font-size: 120%; }
 ul li { margin-left: 15px; }
 
 /* layout */
@@ -49,7 +48,7 @@ header {
   display: block;
   padding: 5px;
   height: 160px;
-  min-height: 100px;
+  min-height: 120px;
   overflow-y: hidden;
   background-color: #EEE;
   box-shadow: -1px 5px 10px 0px rgba(0,0,0,0.4);
@@ -218,9 +217,8 @@ pre {
 }
 p code, li>code {
     font-family: "Fira Code", "Consolas", "Inconsolata", "Anonymous", "Monaco", monospace;
-    background-color:#EEEEFF;
+    background-color:#E3E3E3;
     border: 1px solid #DDDDDD;
-    font-size: 95%;
     padding: 0 0.2em;
 }
 
