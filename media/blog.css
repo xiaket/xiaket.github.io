@@ -222,8 +222,9 @@ p code, li>code {
     padding: 0 0.2em;
 }
 
+#post_title {font-size: 36px; line-height: 42px; margin: 42px 0px 9px; font-weight: bold;}
 .pub_date {
-    margin-bottom: 15px;
+    margin-bottom: 42px;
 }
 .silver {
     color: #8b8e86;

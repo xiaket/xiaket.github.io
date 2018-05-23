@@ -3,7 +3,7 @@ layout: default
 ---
 
   <article>
-    <h1>{{ page.title | escape }}</h1>
+    <h1 id="post_title">{{ page.title | escape }}</h1>
     <h4 class="pub_date silver">{{ page.date | date: "%Y-%m-%d %H:%M" }}</h4>
     {{ content }}
   </article>
