@@ -2,6 +2,7 @@
 title:  "Mac下创建有声书"
 date:   2014-03-03 14:18 +0800
 lang: zh
+ref:    audiobook-creation-in-osx
 ---
 
 本文介绍最近的折腾, 主要是如何高效地在Mac下创建有声书, 这包括:

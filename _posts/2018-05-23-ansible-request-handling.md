@@ -2,6 +2,7 @@
 title:  "ansible请求处理"
 date:   2018-05-23 20:33 +1000
 lang:   zh-cn
+ref:    ansible-request-handling
 ---
 
 # 题记

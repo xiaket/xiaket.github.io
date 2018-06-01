@@ -2,6 +2,7 @@
 title:  "Django中的两个命令行输出添加ASCII颜色的函数"
 date:   2010-01-03 00:09 +0800
 lang: zh
+ref:    python-ascii-color-functions
 ---
 
 代码在`django/utils/termcolors.py`中, 相关应用的例子在下面:

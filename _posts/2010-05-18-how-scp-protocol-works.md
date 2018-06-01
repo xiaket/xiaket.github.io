@@ -2,6 +2,7 @@
 title:  "翻译: scp协议原理"
 date:   2010-05-18 12:21 +0800
 lang: zh
+ref:    how-scp-protocol-works
 ---
 
 译自: [http://blogs.sun.com/janp/entry/how_the_scp_protocol_works] (http://blogs.sun.com/janp/entry/how_the_scp_protocol_works). 原作者为[Jan Pechanec](http://blogs.sun.com/janp/). 这篇文章主要讲solaris中的scp协议实现. 本人对原文做了适当的润色, 希望能更易理解而不易产生误会. 水平有限, 有错误请不吝指出.

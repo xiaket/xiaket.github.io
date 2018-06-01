@@ -2,6 +2,7 @@
 title:  "用python来编写vim脚本"
 date:   2013-06-04 15:44 +0800
 lang: zh
+ref:    vim-python
 ---
 
 之前我在网上找了个自动给python/sh脚本添加header的snippet, 一直在使用. 这个snippet大致是这样的:

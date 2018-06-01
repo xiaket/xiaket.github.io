@@ -2,6 +2,7 @@
 title:  "Bottle对HTTP请求的处理"
 date:   2012-01-02 15:43 +0800
 lang: zh
+ref:    bottle-source-analysis
 ---
 
 最近玩[Bottle](http://bottlepy.org/)这个框架, 分析了一下它的源码, 顺便也理一下它是怎么处理HTTP请求的.

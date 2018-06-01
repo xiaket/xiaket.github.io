@@ -2,6 +2,7 @@
 title:  "又一个iTunes脚本"
 date:   2011-10-12 11:16 +0800
 lang: zh
+ref:    cd-conversion-script-itunes
 ---
 
 西西上次找我问我是怎么把音乐CD转成苹果的无损音频的. 下面是我的方法:

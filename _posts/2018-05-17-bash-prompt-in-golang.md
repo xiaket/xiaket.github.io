@@ -2,6 +2,7 @@
 title:  "Customizing Bash prompt in Golang"
 date:   2018-05-17 19:56 09:51 +0800
 lang:   en
+ref:    bash-prompt-in-golang
 ---
 
 I'm learning Go these days. I'm using it to [solve cryptopals problems](https://github.com/xiaket/cryptopals) and I begin to appreciate the language and start to think in Go. Apart from its wide use in the cloud sphere, Golang is perfect for daily commandline tools that need a balance between and maintainability and speed. I know Python could do similar things, but at least, once in a while, let's use Golang for a change. So in this article, I'll describe my recent adventure to customize my bash prompt, using Go.

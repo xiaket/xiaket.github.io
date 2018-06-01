@@ -2,6 +2,7 @@
 title:  "重新编译scim解决半角标点的问题"
 date:   2010-03-25 13:12 +0800
 lang: zh
+ref:    scim-full-width-punctuation
 ---
 
 

@@ -2,6 +2,7 @@
 title:  "将iTunes正在播放的歌曲发布到新浪微博"
 date:   2011-09-25 21:08 +0800
 lang: zh
+ref:    post-itunes-now-playing-to-weibo
 ---
 
 今天无聊时申请了一个新浪微博的马甲, 不知道能拿来干什么, 于是想到可以做个简单的新浪微博应用出来给自己玩. 想来想去就搞了个python脚本将iTunes里面正在播放的歌发布到微博.

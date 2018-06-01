@@ -2,6 +2,7 @@
 title:  "我不是Sheldon"
 date:   2010-09-24 15:43 +0800
 lang: zh
+ref:    im-not-sheldon
 ---
 
 

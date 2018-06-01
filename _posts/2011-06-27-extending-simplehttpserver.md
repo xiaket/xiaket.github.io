@@ -2,6 +2,7 @@
 title:  "拓展python的SimpleHTTPServer"
 date:   2011-06-27 21:22 +0800
 lang: zh
+ref:    extending-simplehttpserver
 ---
 
 经常我们需要给人传文件. 对于我们这些在各地各网段有机器登录权限的人而言, 直接给人传文件并不一定是最佳的选择. 更理想的情况还是找到对方的IP, 根据对方的网络环境来把要传的文件放到一台更接近的机器上, 然后起一个python的`HTTPServer`, 开一个端口来传文件. 要实现这一点实际上是很容易的:

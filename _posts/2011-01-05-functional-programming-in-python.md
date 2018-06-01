@@ -2,6 +2,7 @@
 title:  "玩玩Python中的函数式编程"
 date:   2011-01-05 22:22 +0800
 lang: zh
+ref:    functional-programming-in-python
 ---
 
 最近又开始重做[Project Euler](http://projecteuler.net/)的题目, 之前只要求做出结果来, 离保证每道题都能在五分钟内算完的要求还差得挺远. 自己看过Pro Python也蠢蠢欲动, 想练习一下看到的技巧们.

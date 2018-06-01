@@ -2,6 +2,7 @@
 title:  "一些自用AppleScript脚本"
 date:   2012-07-31 15:15 +0800
 lang: zh
+ref:    applescripts
 ---
 
 换到Mac下工作, 一些原来写的脚本就不能用了, 很多操作习惯需要修改适应, 这个过程比较痛苦. 作为一个<abbr title="System Administrator">SA</abbr>, 我几年来都是在[konsole](http://konsole.kde.org/)下进行日常工作的, 现在切换到Mac下, 一群快捷键不能使用是一个大问题.

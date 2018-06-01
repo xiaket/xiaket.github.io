@@ -2,6 +2,7 @@
 title:  "Mac Kung Fu集萃"
 date:   2013-06-19 19:51 +0800
 lang: zh
+ref:    mac-kung-fu
 ---
 
 下午下班后扫完了[Mac Kung Fu](http://book.douban.com/subject/19996698/)这本书. 这是本没太大必要细读的书, 例如里面关于Finder的说明实在太多, 而Finder是我用得很少的app. 当然, 大浪淘沙后总有些tip对于我还是有点用的.

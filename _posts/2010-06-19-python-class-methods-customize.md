@@ -2,6 +2,7 @@
 title:  "自定义python类方法实现加减比较操作"
 date:   2010-06-19 11:34 +0800
 lang: zh
+ref:    python-class-methods-customize
 ---
 
 最近在写一个组内项目, 需要把一群一群的类似字典的对象实现类似相加的逻辑. 为了让代码更好看逻辑性更强, 偶玩了下python的自定义类方法.
