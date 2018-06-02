@@ -29,3 +29,11 @@ defaults:
     values:
       layout: "post"
       lang: "en"
+
+m17n:
+  en:
+    desc:  "Bookworm, Pythonista, DevOps"
+    loca:  "Lives in Melbourne"
+  zh:
+    desc:  "读书人, Pythonista, DevOps"
+    loca:  "居墨尔本"
