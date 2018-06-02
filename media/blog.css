@@ -128,7 +128,6 @@ aside {
   padding: 5px;
   color: #EEE;
   margin: 7px 0px;
-  width: 36px;
 }
 #social_buttons {
   position: absolute;
@@ -191,9 +190,10 @@ aside {
   text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);
 }
 
-.icon-facebook:before { content: '\e801'; }
-.icon-twitter:before { content: '\e806'; }
-.icon-github:before { content: '\e807'; }
+.icon-home:before { content: '\e800'; }
+.icon-list:before { content: '\e801'; }
+.icon-twitter:before { content: '\e802'; }
+.icon-github:before { content: '\e803'; }
 
 /* Too narrow to support three columns */
 @media all and (max-width: 640px) {
