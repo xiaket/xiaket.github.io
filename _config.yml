@@ -21,6 +21,7 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-algolia
 
 exclude: ["Gemfile", "Gemfile.lock", "manage", "node_modules", "vendor/bundle/", "vendor/cache/", "vendor/gems/", "vendor/ruby/"]
 
@@ -37,3 +38,8 @@ m17n:
   zh:
     desc:  "读书人, Pythonista, DevOps"
     loca:  "居墨尔本"
+
+algolia:
+  application_id: 'P0TGOSMIDC'
+  index_name: blog
+  search_only_api_key: 2d5c6f0904db45b096a31b3862a3da32
