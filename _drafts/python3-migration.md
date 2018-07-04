@@ -15,7 +15,14 @@ I would also add that the stacker codebase does include a lot of tests, both uni
 ## The process
 
 
+
+
 ## The takeaways
 
-
-
+1. This investment will pay you off.
+1. future caucious.
+2. beware of automatic changes.
+3. plan ahead.
+4. dependencies.
+5. dictionary key order.
+6. type-hint
