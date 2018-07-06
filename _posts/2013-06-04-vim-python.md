@@ -13,7 +13,7 @@ function AddTitlePython()
     call setline(1, "#!/usr/bin/env python")
     call append(1, "#coding=utf-8")
     call append(2, '"""')
-    call append(3,"Author:         Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>")
+    call append(3,"Author:         Kai Xia <xiaket@gmail.com>")
     call append(4,"Filename:       " . expand("%"))
     call append(5,"Last modified:  2010-04-01 00:00")
     call append(6,"")
@@ -24,7 +24,7 @@ endf
 function AddTitleSH()
     call setline(1, "#!/bin/sh")
     call append(1,"# ")
-    call append(2,"# Author:         Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>")
+    call append(2,"# Author:         Kai Xia <xiaket@gmail.com>")
     call append(3,"# Filename:       " . expand("%"))
     call append(4,"# Last modified:  2010-04-01 00:00")
     call append(5,"# ")
@@ -105,7 +105,7 @@ def add_header():
 代码逻辑挺简单, 对于py和sh后缀的文件, 创建一个range对象, 然后把我们的header填进去即可. 我另外试过直接修改current_buffer, 不过不管用. 前面这段代码是python相关的, 而vim那一段则是这么写的:
 
 ```vim
-let g:XY_HEADER_AUTHOR = "Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>"
+let g:XY_HEADER_AUTHOR = "Kai Xia <xiaket@gmail.com>"
 autocmd bufread,bufnewfile * python add_header()
 autocmd bufwritepre * python update_header()
 ```
@@ -149,7 +149,7 @@ def update_header():
 
 ```vim
 " python and shell script header.
-let g:XY_HEADER_AUTHOR = "Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>"
+let g:XY_HEADER_AUTHOR = "Kai Xia <xiaket@gmail.com>"
 autocmd bufread,bufnewfile * python add_header()
 autocmd bufwritepre * python update_header()
 

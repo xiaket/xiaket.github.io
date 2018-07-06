@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 """
-Author:         Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>
+Author:         Kai Xia <xiaket@gmail.com>
 Filename:       convert-cd.py
 Type:           Utility
 Last modified:  2011-10-11 18:53

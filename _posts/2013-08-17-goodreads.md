@@ -16,7 +16,7 @@ ref:    goodreads
 ```sh
 #!/bin/sh
 #
-# Author:         Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>
+# Author:         Kai Xia <xiaket@gmail.com>
 # Filename:       getbookrating.sh
 # Date created:   2013-08-17 21:40
 # Last modified:  2013-08-17 22:51

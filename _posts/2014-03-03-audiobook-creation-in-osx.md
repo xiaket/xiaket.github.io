@@ -90,11 +90,11 @@ afconvert "${fullpath}" -v -s 3 -o "${output_name}" -q 127 -b "${bit_rate}000" -
 ```sh
 #!/usr/bin/env bash
 #
-# Author:         Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>
+# Author:         Kai Xia <xiaket@gmail.com>
 # Filename:       2m4b
 # Date created:   2014-02-27 16:52
 # Last modified:  2014-02-27 16:52
-# Modified by:    Xia Kai <xiaket@corp.netease.com/xiaket@gmail.com>
+# Modified by:    Kai Xia <xiaket@gmail.com>
 #
 # Description:
 # create an m4b audiobook file from a movie or an mp3 file.
