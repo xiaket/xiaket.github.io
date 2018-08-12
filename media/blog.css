@@ -47,12 +47,13 @@ header {
   position: fixed;
   width: 100%;
   display: block;
-  padding: 5px;
-  height: 160px;
-  min-height: 120px;
+  height: 100px;
+  min-height: 100px;
   overflow-y: hidden;
   background-color: #EEE;
   box-shadow: -1px 5px 10px 0px rgba(0,0,0,0.4);
+  display: flex;
+  flex-flow: row;
 }
 /* effect: see through the header bar */
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
@@ -62,6 +63,48 @@ header {
     backdrop-filter: brightness(1.5) blur(3px);
   }
 }
+#header-container {
+  flex: 2 1 50%;
+  order: 2;
+  max-width: 640px;
+  display: flex;
+}
+#header-padding-left, #header-padding-right {
+  flex: 1 6 25%;
+}
+#header-padding-left {
+  order: 1;
+}
+#header-padding-right {
+  order: 3;
+}
+
+#header-logo {
+  order: 1;
+  width: 100px;
+}
+#header-text {
+  order: 2;
+  width: 440px;
+  height: 100%;
+  margin-top: 70px;
+}
+#social_buttons {
+  order: 3;
+  width: 100px;
+  height: 100%;
+  margin-top: 66px;
+}
+#social_buttons a {
+  float: left;
+  border-radius:50%;
+  color: #244382;
+  padding: 3px;
+  padding-top: 6px;
+  margin: 2px;
+  line-height: 20px;
+}
+
 header p {
   color: #AAA;
   font-size: 14px;
@@ -69,29 +112,25 @@ header p {
   text-align: center;
 }
 header canvas{
-  display: block;
-  margin: auto;
   padding: 0px;
 }
 #main {
   margin: 0px;
   padding: 0px;
-  padding-top: 180px;
+  padding-top: 120px;
   display: flex;
   flex-flow: row;
   min-height: 800px;
 }
 article {
   margin: 0px 4px 4px 4px;
-  padding: 5px;
+  padding: 5px 0px;
   flex: 2 1 50%;
   order: 2;
   border-radius: 10px;
   max-width: 640px;
 }
 nav, aside {
-  margin: 4px;
-  padding: 5px;
   flex: 1 6 25%;
 }
 nav {
@@ -113,41 +152,6 @@ aside {
     padding-left: 20px;
 }
 
-#quick_access {
-  position: absolute;
-  top: 10px;
-  left: 0px;
-  width: 36px;
-  text-align: center;
-}
-
-#quick_access a {
-  display: inline-block;
-  background-color: #244382;
-  border-radius: 0px 8px 8px 0px;
-  font-size: 16px;
-  padding: 5px;
-  color: #EEE;
-  margin: 7px 0px;
-}
-#social_buttons {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 40px;
-  text-align:center;
-}
-
-#social_buttons a {
-  float: left;
-  color: #EEE;
-  border-radius:50%;
-  background-color: #244382;
-  padding: 3px;
-  padding-top: 6px;
-  margin: 5px 2px;
-  line-height: 20px;
-}
 
 @font-face {
   font-family: 'fontello';

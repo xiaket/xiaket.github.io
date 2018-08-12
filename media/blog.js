@@ -12,23 +12,23 @@ function coarseLine(context, startx, starty, endx, endy, segments, width, coarse
   lastx = startx;
   lasty = starty;
   for(index=0; index < segments; index++){
-	choice=Math.random();
-	if (choice > 0.5){
-	  delta1=Math.floor(Math.random()*(2*coarseness+1)) - coarseness;
-	  delta2=-Math.floor(Math.random()*(2*coarseness+1)) + (coarseness);
-	}else{
-	  delta1=-Math.floor(Math.random()*(2*coarseness+1)) + (coarseness);
-	  delta2=Math.floor(Math.random()*(2*coarseness+1)) - (coarseness);
-	}
-	dx1 = Math.round((endy-starty)*delta1/l);
-	dx2 = Math.round((endy-starty)*delta2/l);
-	dy1 = Math.round((endx-startx)*delta1/l);
-	dy2 = Math.round((endx-startx)*delta2/l);
-	nextx = Math.round((endx - startx) / segments) + lastx;
-	nexty = Math.round((endy - starty) / segments) + lasty;
-	context.bezierCurveTo((2*lastx+nextx)/3+dx1,(2*lasty+nexty)/3+dy1,(lastx+2*nextx)/3+dx2,(lasty+2*nexty)/3+dy2,nextx,nexty);
-	lastx = nextx;
-	lasty = nexty;
+  choice=Math.random();
+  if (choice > 0.5){
+    delta1=Math.floor(Math.random()*(2*coarseness+1)) - coarseness;
+    delta2=-Math.floor(Math.random()*(2*coarseness+1)) + (coarseness);
+  }else{
+    delta1=-Math.floor(Math.random()*(2*coarseness+1)) + (coarseness);
+    delta2=Math.floor(Math.random()*(2*coarseness+1)) - (coarseness);
+  }
+  dx1 = Math.round((endy-starty)*delta1/l);
+  dx2 = Math.round((endy-starty)*delta2/l);
+  dy1 = Math.round((endx-startx)*delta1/l);
+  dy2 = Math.round((endx-startx)*delta2/l);
+  nextx = Math.round((endx - startx) / segments) + lastx;
+  nexty = Math.round((endy - starty) / segments) + lasty;
+  context.bezierCurveTo((2*lastx+nextx)/3+dx1,(2*lasty+nexty)/3+dy1,(lastx+2*nextx)/3+dx2,(lasty+2*nexty)/3+dy2,nextx,nexty);
+  lastx = nextx;
+  lasty = nexty;
   }
   context.strokeStyle = color;
   context.stroke();
@@ -93,6 +93,6 @@ function r(x, dx) {
 
 function updateheight(){
   current = window.scrollY;
-  document.getElementById("header").style.height = (160 - current) +  "px";
+  document.getElementById("header").style.height = (100 - current) +  "px";
 }
 
