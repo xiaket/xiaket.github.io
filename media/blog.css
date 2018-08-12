@@ -13,18 +13,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
 }
+
 h1, h2, h3, h4 {
   color: #181818;
   font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
-  margin-top: 10px;
 }
+
 h1 a, h2 a, h3 a, h4 a { font-weight: inherit; }
-h1 { font-size: 30px; line-height: 32px; margin-bottom: 10px; font-weight: bold;}
-h2 { font-size: 24px; line-height: 26px; margin-bottom: 8px; font-weight: bold;}
-h3 { font-size: 18px; line-height: 22px; margin-bottom: 6px; }
-h4 { font-size: 16px; line-height: 18px; margin-bottom: 4px; }
-p { margin: 0 0 15px 0; font-size: 120%; }
+h1 { font-size: 30px; line-height: 32px; margin: 18px 0px 12px; font-weight: bold;}
+h2 { font-size: 24px; line-height: 26px; margin: 12px 0px 8px; font-weight: bold;}
+h3 { font-size: 18px; line-height: 22px; margin: 9px 0px 6px; }
+h4 { font-size: 16px; line-height: 18px; margin: 6px 0px 2px; }
+p { font-size: 100%; }
 p img { margin: 0; }
 
 a { color: #244382; margin: 0 4px; text-decoration: none; }
@@ -34,7 +35,7 @@ p a { line-height:line inherit; text-decoration: underline; }
 ul, ol { margin-bottom: 15; }
 ol { list-style: decimal; margin-left: 30px; }
 ul { list-style-type: square; margin-left: 30px; }
-li { line-height: 18px; margin-bottom: 12px; font-size: 120%; }
+li { line-height: 18px; margin-bottom: 12px; font-size: 100%; }
 ul li { margin-left: 15px; }
 
 /* layout */
@@ -218,13 +219,17 @@ pre {
 p code, li>code {
     font-family: "Fira Code", "Consolas", "Inconsolata", "Anonymous", "Monaco", monospace;
     background-color:#E3E3E3;
-    border: 1px solid #DDDDDD;
     padding: 0 0.2em;
+    margin: 5px 0px;
+    line-height: 140%;
+}
+code {
+    line-height: 140%;
 }
 
 #post_title {font-size: 36px; line-height: 42px; margin: 42px 0px 9px; font-weight: bold;}
 .pub_date {
-    margin-bottom: 42px;
+    margin-bottom: 62px;
 }
 .silver {
     color: #8b8e86;
@@ -234,6 +239,7 @@ p code, li>code {
 .highlight pre {
     background: #002B36;
     color: white;
+    margin: 4px 0px;
 }
 
 /* solarize styles. */
