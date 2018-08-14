@@ -19,21 +19,19 @@ h1, h2, h3, h4 {
 }
 
 h1 a, h2 a, h3 a, h4 a { font-weight: inherit; }
-h1 { font-size: 30px; line-height: 32px; margin: 30px 0px 20px; font-weight: bold;}
-h2 { font-size: 24px; line-height: 26px; margin: 24px 0px 16px; font-weight: bold;}
-h3 { font-size: 18px; line-height: 22px; margin: 18px 0px 12px; }
-h4 { font-size: 16px; line-height: 18px; margin: 12px 0px 8px; }
-p { font-size: 100%; }
+h1 { margin: 30px 0px 20px; font-weight: bold;}
+h2 { margin: 24px 0px 16px; font-weight: bold;}
+h3 { margin: 18px 0px 12px; }
+h4 { margin: 12px 0px 8px; }
 p img { margin: 0; }
 
 a { color: #244382; margin: 0 4px; text-decoration: none; }
 a:visited { color: #8b8e86; }
 p a { line-height:line inherit; text-decoration: underline; }
 
-ul, ol { margin-bottom: 15; }
+ul, ol { margin-bottom: 15px; }
 ol { list-style: decimal; margin-left: 30px; }
 ul { list-style-type: square; margin-left: 30px; }
-li { line-height: 18px; margin-bottom: 12px; font-size: 100%; }
 ul li { margin-left: 15px; }
 
 /* layout */
@@ -62,13 +60,14 @@ header{
 #header-logo {
   margin: 0px 0px 50px 20px;
 }
+nav ul li {
+  margin-bottom: 10px;
+}
 @media (min-width: 900px){
   header{display:block}
-  p,li{line-height:1.6}
 }
 @media all and (max-width: 640px) {
   span.li-date {display: none;}
-  p,li{line-height:1.6; font-size: 80%;}
 }
 
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
@@ -86,7 +85,7 @@ footer{
   width: calc(100% - 40px);
   text-align:center;
   color: #CCC;
-  font-size: 12px;
+  font-size: 70%;
   line-height: 150%;
 }
 footer p a {margin: 0px;}
@@ -114,7 +113,6 @@ p code, li>code {
     background-color:#E3E3E3;
     padding: 0 0.2em;
     margin: 5px 0px;
-    line-height: 140%;
 }
 code {
     line-height: 140%;
