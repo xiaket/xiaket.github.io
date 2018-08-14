@@ -57,6 +57,10 @@ function drawLogo() {
   coarseLine(context, 45, 45, 71, 79, 2, 3, 3, "white");
 }
 
+//       __
+// |__| |  | |__|
+//    | |__|    |
+//
 function draw_404() {
   var canvas = document.getElementById('canvas-404');
   var context = canvas.getContext('2d');
@@ -84,15 +88,5 @@ function draw_404() {
 
 function r(x, dx) {
   return x + Math.floor((Math.random() * dx * 2) - dx);
-}
-
-//       __
-// |__| |  | |__|
-//    | |__|    |
-//
-
-function updateheight(){
-  current = window.scrollY;
-  document.getElementById("header").style.height = (100 - current) +  "px";
 }
 

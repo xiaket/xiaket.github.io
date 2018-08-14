@@ -16,7 +16,7 @@ layout: default
   <ol>
       {%- endif -%}
     {%- endunless %}
-    <li><a href="{{ post.url }}">{{ post.title | escape }}</a> ({{ post.date | date: "%Y-%m-%d %H:%M"}})</li>
+    <li><a href="{{ post.url }}">{{ post.title | escape }}</a><span class="li-date">({{ post.date | date: "%Y-%m-%d %H:%M"}})</span></li>
   {% endfor -%}
   </ol>
 </article>

@@ -33,11 +33,9 @@ defaults:
 
 m17n:
   en:
-    desc:  "Bookworm, Pythonista, DevOps"
-    loca:  "Lives in Melbourne"
+    desc:  "Bookworm/Pythonista/DevOps/Melbournian"
   zh:
-    desc:  "读书人, Pythonista, DevOps"
-    loca:  "居墨尔本"
+    desc:  "读书人/Pythonista/DevOps/居墨尔本"
 
 algolia:
   application_id: 'P0TGOSMIDC'

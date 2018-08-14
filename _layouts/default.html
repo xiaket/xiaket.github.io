@@ -1,18 +1,27 @@
 ---
 layout: base
 ---
-  {% include header.html %}
-  <div id='main'>
-
+  <main>
+    <header>
+      <div id="header-logo">
+        <a href="/"><canvas id="logo" width="100" height="100"></canvas></a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="/archive.html">Archive</a></li>
+          <li><a href="https://github.com/xiaket" target="_blank" rel="noopener">Github</a></li>
+          <li><a href="https://twitter.com/xiaket" target="_blank" rel="noopener">Twitter</a></li>
+          <li><a href="/feed.xml">RSS</a></li>
+        </ul>
+      </nav>
+    </header>
     {{ content }}
-
-    <nav></nav>
-    <aside></aside>
-  </div>
-
-  <script type="text/javascript" src="/media/blog.js" integrity="sha384-NGP9O1YBCUjle+0A5q8N09lslyBpv3rpUTPYRoaEKI1bv9zxOyMBzj2baV0s4KiS" crossorigin="anonymous"></script>
+  </main>
+  <footer>
+    <p>夏恺/Kai Xia/<a href="mailto:xiaket@gmail.com">xiaket</a></p>
+    <p>{{ site.m17n[page.lang].desc }}</p>
+  </footer>
+  <script type="text/javascript" src="/media/blog.js" integrity="sha384-OD83pHtQOMY83Xoec11jNezjQbI/1LXofJCltAPoT5QfAYCtxwxCJXlWcFlblycD" crossorigin="anonymous"></script>
   <script>
     window.addEventListener("load", drawLogo, true);
-    window.addEventListener("scroll", updateheight, true);
   </script>
-{% include google-analytics.html %}
