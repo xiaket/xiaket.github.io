@@ -4,7 +4,20 @@ layout: base
   <main>
     <header>
       <div id="header-logo">
-        <a href="/"><canvas id="logo" width="100" height="100"></canvas></a>
+        <a href="/">
+          <svg width="100" height="100" id="logo-svg">
+            <defs>
+              <radialGradient id="grad" cx="50%" cy="50%" r="42%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:#4467AD;" />
+                <stop offset="100%" style="stop-color: #203D76;" />
+              </radialGradient>
+            </defs>
+            <circle fill="url(#grad)" id="svg-circle" />
+            <path stroke="white" stroke-linecap="round" fill="transparent" id="svg-path1"/>
+            <path stroke="white" stroke-linecap="round" fill="transparent" id="svg-path2"/>
+            <path stroke="white" stroke-linecap="round" fill="transparent" id="svg-path3"/>
+          </svg>
+        </a>
       </div>
       <nav>
         <ul>
@@ -21,7 +34,7 @@ layout: base
     <p>夏恺/Kai Xia/<a href="mailto:xiaket@gmail.com">xiaket</a></p>
     <p>{{ site.m17n[page.lang].desc }}</p>
   </footer>
-  <script type="text/javascript" src="/media/blog.js" integrity="sha384-OD83pHtQOMY83Xoec11jNezjQbI/1LXofJCltAPoT5QfAYCtxwxCJXlWcFlblycD" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="/media/blog.js" integrity="sha384-lUXyBmq4nQsLjJZXsK+uyppMWOUxNyl2nAz8DsAZcZFqauelY25BaRWCs291QUXs" crossorigin="anonymous"></script>
   <script>
-    window.addEventListener("load", drawLogo, true);
+    window.addEventListener("load", writeK, true);
   </script>
