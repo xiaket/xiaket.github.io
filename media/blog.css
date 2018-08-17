@@ -31,13 +31,14 @@ p a { line-height:line inherit; text-decoration: underline; }
 
 ul, ol { margin-bottom: 15px; }
 ol { list-style: decimal; margin-left: 30px; }
-ul { list-style-type: square; margin-left: 30px; }
+ul { list-style-type: square; margin: 5px 0px 5px 30px; }
 ul li { margin-left: 15px; }
 
 /* layout */
 *{box-sizing:border-box}
 body{
   padding:20px;
+  min-width: 300px;
 }
 main{
   margin:auto;
@@ -45,8 +46,8 @@ main{
   position:relative;
   padding-bottom: 70px;
 }
-header ul{padding:0; list-style:none}
-header{
+#wide-header ul{padding:0; list-style:none}
+#wide-header{
   display:none;
   position:absolute;
   right:calc(100% + 20px);
@@ -59,40 +60,68 @@ header{
 #header-logo {
   margin: 0px 0px 50px 20px;
 }
-nav ul li {
+#pc-nav ul li {
   margin-bottom: 10px;
 }
-@media (min-width: 900px){
-  header{display:block}
+#slim-header {
+  display: none;
 }
-@media all and (max-width: 640px) {
+
+@media (min-width: 900px){
+  #wide-header{display:block}
+}
+@media all and (max-width: 899px) {
   span.li-date {display: none;}
+  #slim-header { display:block }
 }
 
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
   footer {
-    opacity: 0.6;
+    opacity: 0.5;
     -webkit-backdrop-filter: brightness(2) blur(10px);
     backdrop-filter: brightness(2) blur(10px);
   }
 }
 
-footer{
+#slim-header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  padding: 0px;
+  width: 100%;
+}
+#mobile-home {
+  float: left;
+}
+#mobile-nav ul {
+  position: relative;
+  right: 0px;
+  bottom: 0px;
+  text-align: right;
+}
+#mobile-nav ul li {
+  display: inline;
+  margin: 0px;
+}
+
+#slim-header, footer{
   box-shadow: 0px 1px 3px 2px rgba(0,0,0,0.4);
+  width: 100%;
+  line-height: 150%;
+  color: #333;
+  font-size: 70%;
+}
+footer {
   position: fixed;
   bottom: 0px;
   left: 0px;
-  width: 100%;
-  padding: 10px 0px;
-  line-height: 150%;
-  color: #666;
-  font-size: 70%;
+  padding: 6px 0px;
   text-align:center;
 }
 footer p a {margin: 0px;}
 
 p { line-height: 170%; }
-ol { line-height: 200%; }
+ul, ol { line-height: 140%; }
 
 #post_title {margin: 40px 0px 10px;}
 

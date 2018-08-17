@@ -68,7 +68,18 @@ function coarse_line(startx, starty, endx, endy, coarseness, segments = 2){
 }
 
 function writeK(){
-  var svg_size = document.getElementById('logo-svg').clientWidth;
+  var svgs = document.getElementsByClassName("logo-svg");
+  var i;
+  for (i = 0; i < svgs.length; i++) {
+    writeKInElement(svgs[i]);
+  }
+}
+
+function writeKInElement(element) {
+  var svg_size = element.clientWidth;
+  if (svg_size == 0) {
+    return
+  }
   var half = svg_size * 0.5;
   var width = svg_size * 0.02;
   var radius = svg_size * 0.42;
@@ -88,17 +99,17 @@ function writeK(){
   var path3_x_end = svg_size * 0.71;
   var path3_y_end = svg_size * 0.79;
 
-  document.getElementById("svg-circle").setAttribute("cx", half);
-  document.getElementById("svg-circle").setAttribute("cy", half);
-  document.getElementById("svg-circle").setAttribute("r", radius);
+  element.getElementsByClassName("svg-circle")[0].setAttribute("cx", half);
+  element.getElementsByClassName("svg-circle")[0].setAttribute("cy", half);
+  element.getElementsByClassName("svg-circle")[0].setAttribute("r", radius);
 
-  document.getElementById("svg-path1").setAttribute("stroke-width", width);
-  document.getElementById("svg-path2").setAttribute("stroke-width", width);
-  document.getElementById("svg-path3").setAttribute("stroke-width", width);
+  element.getElementsByClassName("svg-path1")[0].setAttribute("stroke-width", width);
+  element.getElementsByClassName("svg-path2")[0].setAttribute("stroke-width", width);
+  element.getElementsByClassName("svg-path3")[0].setAttribute("stroke-width", width);
 
-  document.getElementById("svg-path1").setAttribute("d", coarse_line(path1_x, path1_y, path1_x_end, path1_y_end, 1));
-  document.getElementById("svg-path2").setAttribute("d", coarse_line(path2_x, path2_y, path2_x_end, path2_y_end, 5));
-  document.getElementById("svg-path3").setAttribute("d", coarse_line(path3_x, path3_y, path3_x_end, path3_y_end, 3));
+  element.getElementsByClassName("svg-path1")[0].setAttribute("d", coarse_line(path1_x, path1_y, path1_x_end, path1_y_end, 1));
+  element.getElementsByClassName("svg-path2")[0].setAttribute("d", coarse_line(path2_x, path2_y, path2_x_end, path2_y_end, 5));
+  element.getElementsByClassName("svg-path3")[0].setAttribute("d", coarse_line(path3_x, path3_y, path3_x_end, path3_y_end, 3));
 }
 
 //       __
