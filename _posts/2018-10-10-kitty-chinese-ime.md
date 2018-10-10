@@ -1,5 +1,5 @@
 ---
-title:  自编译Kitty支持中文输入"
+title:  自编译Kitty支持中文输入
 date:   2018-10-10 20:58 +1000
 lang:   zh
 ref:    kitty-chinese-ime
