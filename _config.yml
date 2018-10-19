@@ -2,7 +2,6 @@
 title: 年华转瞬
 email: xiaket@gmail.com
 description: 夏恺, xiaket, 读书人, Pythonista, DevOPs
-#url: "https://blog.xiaket.org"
 url: "https://xiaket.github.io"
 twitter_username: xiaket
 github_username:  xiaket
@@ -21,7 +20,6 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-  - jekyll-algolia
 
 exclude: ["Gemfile", "Gemfile.lock", "manage", "node_modules", "vendor/bundle/", "vendor/cache/", "vendor/gems/", "vendor/ruby/"]
 
@@ -36,8 +34,3 @@ m17n:
     desc:  "Bookworm/Pythonista/DevOps/Melbournian"
   zh:
     desc:  "读书人/Pythonista/DevOps/居墨尔本"
-
-algolia:
-  application_id: 'P0TGOSMIDC'
-  index_name: blog
-  search_only_api_key: 2d5c6f0904db45b096a31b3862a3da32
