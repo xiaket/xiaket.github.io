@@ -1,15 +1,14 @@
 ---
 title:  "拓展python的SimpleHTTPServer"
 date:   2011-06-27 21:22 +0800
-lang: zh
 ref:    extending-simplehttpserver
 ---
 
 经常我们需要给人传文件. 对于我们这些在各地各网段有机器登录权限的人而言, 直接给人传文件并不一定是最佳的选择. 更理想的情况还是找到对方的IP, 根据对方的网络环境来把要传的文件放到一台更接近的机器上, 然后起一个python的`HTTPServer`, 开一个端口来传文件. 要实现这一点实际上是很容易的:
 
-```bash
+<pre class="code" data-lang="bash"><code>
 python -m SimpleHTTPServer
-```
+</code></pre>
 
 这样就在这台服务器上开了一个8000端口, 提供当前目录下的内容.
 
@@ -23,17 +22,17 @@ python -m SimpleHTTPServer
 
 为解决这些问题, 我们可以通过写一个简单的python脚本来拓展python自带的`SimpleHTTPServer`的功能. 我们的出发点是python官方文档中的例子:
 
-```python
+<pre class="code" data-lang="python"><code>
 def run(server_class=BaseHTTPServer.HTTPServer,
         handler_class=BaseHTTPServer.BaseHTTPRequestHandler):
     server_address = ('', 8000)
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
-```
+</code></pre>
 
 端口的问题可以用`random.randint`来找一个随机端口, 不提. 开服务后加一些代码能够把当前目录下的文件列出来. 并给出拼好的url, 这些修改都比较简单:
 
-```python
+<pre class="code" data-lang="python"><code>
 def main(port, server_class=NotracebackServer,
             handler_class=PartialContentHandler):
     server_address = ('', port)
@@ -55,21 +54,21 @@ if __name__ == "__main__":
             print "link: http://%s:%s/%s" % (ip, port, f)
     print "===== start logging =====n"
     main(port=port)
-```
+</code></pre>
 
 这儿main中的参数我们后面会谈到. 这段代码的输出类似:
 
-```
+<pre class="code"><code>
 [xiaket@bolt:~]httpd.py
 serving on: http://10.0.2.15:34451/
 ===== local files =====
 link: http://10.0.2.15:34451/file.tgz
 ===== start logging =====
-```
+</code></pre>
 
 下面主要讲给`SimpleHTTPServer`添加续传的功能. 这是一个标准HTTP功能, 不过SimpleHTTPServer没有实现这一点, 这一点具体详情可以参考[相关RFC](www.ietf.org/rfc/rfc2068.txt). 另外, 我们可以用wget, 找一台支持续传功能的httpd, 把具体的HTTP通讯中的request和response打印出来:
 
-```
+<pre class="code"><code>
 [xiaket@bolt:~]wget -d -nv -c http://mirrors.163.com/slackware/slackware-13.0-iso/slackware-13.0-install-d1.iso -O out
 Setting --no (verbose) to 0
 Setting --continue (continue) to 1
@@ -110,22 +109,22 @@ Content-Length: 620077056
 Last-Modified: Wed, 26 Aug 2009 16:10:47 GMT
 Accept-Ranges: bytes
 Registered socket 4 for persistent reuse.
-```
+</code></pre>
 
 接下来, 我们只需依样画葫芦, 解析传过来的request, 给出一样的response的就行了. 负责处理GET请求的函数是`SimpleHTTPRequestHandler`类里的`do_GET`方法. 这个类比较简单:
 
-```python
+<pre class="code" data-lang="python"><code>
 def do_GET(self):
     """Serve a GET request."""
     f = self.send_head()
     if f:
         self.copyfile(f, self.wfile)
         f.close()
-```
+</code></pre>
 
 主要逻辑是处理完`header`后拿到一个文件对象, 然后往`self.wfile`里面复制文件(这样就写到客户端了). 主要的处理逻辑还是在`send_head`里:
 
-```python
+<pre class="code" data-lang="python"><code>
 def send_head(self):
     """Common code for GET and HEAD commands.
 
@@ -169,11 +168,11 @@ def send_head(self):
     self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
     self.end_headers()
     return f
-```
+</code></pre>
 
 首先拿到GET请求的实际路径, 然后如果这个路径是个文件夹, 就做一些逻辑, 例如显示`index.html`和显示文件列表等. 对于我的传文件的需求, 这些功能是不必要的, 于是砍掉, 留一个提示文件找不到的404就行. 后面马上就到了返回状态码200, 这个可不行. 按照RFC的要求, 续传时返回的状态码应是206. 实际上, 做这种续传请求需要一个特殊的header, Range. 为此, 我们在这儿加一个逻辑判断捕获这个header:
 
-```python
+<pre class="code" data-lang="python"><code>
 def send_head(self):
     """
     added support for partial content. i'm not surprised if http HEAD
@@ -204,11 +203,11 @@ def send_head(self):
             self.send_error(400, "bad range specified.")
             f.close()
             return None
-```
+</code></pre>
 
 按照HTTP RFC的要求, Range应可以像python的列表一样给定范围, 不过增加这种范围支持只会给下载工具带来方便(我们不喜欢迅雷!), 因此此处特意只支持到结尾的Range请求. 后面就比较容易了, 拼字符串而已:
 
-```python
+<pre class="code" data-lang="python"><code>
 self.send_response(206)
 self.send_header("Content-type", ctype)
 self.send_header("Connection", "keep-alive")
@@ -221,11 +220,11 @@ self.send_header("Content-Range", "%s%s/%s" % (start, full-1, full))
 self.end_headers()
 f.seek(pos)
 return f
-```
+</code></pre>
 
 后面的处理普通GET请求代码和原来的`send_head`一致, 就不贴了. 为了给传送完毕增加一条日志, 并让整个代码结构更合理, 我定义了一个新函数`mycopy`来处理原理的copyfile的逻辑:
 
-```python
+<pre class="code" data-lang="python"><code>
 class PartialContentHandler(SimpleHTTPRequestHandler):
     def mycopy(self, f):
         """
@@ -246,7 +245,7 @@ class PartialContentHandler(SimpleHTTPRequestHandler):
         f = self.send_head()
         if f:
             self.mycopy(f)
-```
+</code></pre>
 
 `PartialContentHandler`里除了这两个已列出的方法外, 还有刚才我们提到的`send_head`方法. 这儿的`log_message`方法是在基类`BaseHTTPServer`中定义的.
 
@@ -256,7 +255,7 @@ class PartialContentHandler(SimpleHTTPRequestHandler):
 
 完整的输出演示如下:
 
-```
+<pre class="code"><code>
 [xiaket@bolt:~]python httpd.py
 serving on: http://10.0.2.15:27708/
 ===== local files =====
@@ -270,4 +269,4 @@ bolt.netease.com - - [27/Jun/2011 18:52:55] "GET /bigfile HTTP/1.0" 200 -
 bolt.netease.com - - [27/Jun/2011 18:52:56] "GET /bigfile HTTP/1.0" req terminated.
 bolt.netease.com - - [27/Jun/2011 18:53:05] "GET /bigfile HTTP/1.0" 206 -
 bolt.netease.com - - [27/Jun/2011 18:53:05] "GET /bigfile HTTP/1.0" req finished.
-```
+</code></pre>

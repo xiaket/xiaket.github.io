@@ -1,7 +1,6 @@
 ---
 title:  "将iTunes正在播放的歌曲发布到新浪微博"
 date:   2011-09-25 21:08 +0800
-lang: zh
 ref:    post-itunes-now-playing-to-weibo
 ---
 
@@ -11,24 +10,23 @@ ref:    post-itunes-now-playing-to-weibo
 
 开了一个Idle, 花了一点点时间就能够摸到怎样拿到正在播放的歌曲的基本信息了:
 
-```python
+<pre class="code" data-lang="python"><code>
 >>> from win32com.client import Dispatch
 >>> itunes = Dispatch("iTunes.Application")
 >>> ct = itunes.CurrentTrack
 >>> print ct.Name, ct.Artist
 Einaudi: Fly Ludovico Einaudi
-```
+</code></pre>
 
 好了, 我们现在可以整理一下需求了, 我们希望发出来的微博是什么样子的: 首先无疑问应该包含歌曲名称, 专辑名称, 演唱者名字, 已播放次数. 如果当前是在一个播放列表里播放, 那么播放列表的名字也是应该之选. 如果当前歌曲有专辑封面, 上传专辑封面也是一个很好的选择. 来来来, 我们格式化一下:
 
-```
+<pre class="code"><code>
 #Now Playing# Einaudi: Fly - Ludovico Einaudi, 专辑<divenire>, 播放列表'favourite', 当前歌曲已播放59次.
-</divenire>
-```
+</code></pre>
 
 貌似长度还行. 应该不会超过140字的限制. 我们想想代码怎么实现吧. 首先要确定的是, 我们应该把歌曲的信息尽量压榨出来, 做成字典传给待格式化的字符串, 这样如果我们对当前格式化字符串有不满, 添加属性到微博内容的时候也可以尽量少地改动代码. 在iTunes官方提供的SDK里面, 我们把这些歌曲的属性都拿出来:
 
-```python
+<pre class="code" data-lang="python"><code>
 from win32com.client import Dispatch
 
 
@@ -48,19 +46,19 @@ track_info = {
     'year': track.Year,
     'time': track.Time,
 }
-```
+</code></pre>
 
 这段写好以后, 要完成我们之前说的微博内容是很容易的:
 
-```python
+<pre class="code" data-lang="python"><code>
 post_content_format = u"#Now Playing# %(name)s - %(artist)s, 专辑&lt;%(album)s>, 播放列表'%(playlist)s', 已播放%(playedcount)s次"
 
 post_content = post_content_format % track_info
-```
+</code></pre>
 
 对哦, 我们还需要歌曲的专辑封面. 于是继续围观SDK的帮助文档, iTunes不会给你目前这个专辑封面在硬盘上的文件名, 而是只提供了一个另存的接口:
 
-```python
+<pre class="code" data-lang="python"><code>
 artwork = track.Artwork
 if artwork.Count > 0:
     format_dict = {
@@ -79,7 +77,7 @@ if artwork.Count > 0:
         temp_dir = os.environ['TEMP']
         pic_name = '%s\artwork.%s' % (temp_dir, format_dict[pic_format])
         picobj.SaveArtworkToFile(pic_name)
-```
+</code></pre>
 
 到现在, 我们已经完成了iTunes这边的工作. 接下来该玩玩新浪微博的API了. 由于之前没玩过oauth, 于是先对照代码看了看文档. python的SDK给我感觉应该是某个人(比较有可能是新浪工作人员)在jroesslein的Twitter python SDK(Tweepy)的基础上修改而成的. 本来Tweepy的代码就看得我不爽, 改编者又使代码质量下降不少. 我本来想在已有pythonSDK的基础上改改, 后来由于这个原因还是自己重写了下. 一个文件把oauth, API请求以及各种细节处理全放下了, 行数也只有300左右. 还算满意了.
 

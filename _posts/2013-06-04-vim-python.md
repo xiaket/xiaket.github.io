@@ -1,13 +1,12 @@
 ---
 title:  "用python来编写vim脚本"
 date:   2013-06-04 15:44 +0800
-lang: zh
 ref:    vim-python
 ---
 
 之前我在网上找了个自动给python/sh脚本添加header的snippet, 一直在使用. 这个snippet大致是这样的:
 
-```vim
+<pre class="code" data-lang="vim"><code>
 " python and shell script header.
 function AddTitlePython()
     call setline(1, "#!/usr/bin/env python")
@@ -40,7 +39,7 @@ autocmd bufnewfile *.py call AddTitlePython()
 autocmd bufwritepre *.py call UpdateDate()
 autocmd bufnewfile *.sh call AddTitleSH()
 autocmd bufwritepre *.sh call UpdateDate()
-```
+</code></pre>
 
 这个snippet大致的逻辑是对于py/sh这两个后缀的新文件, 我们自动增加一个脚本的header, 记录脚本的信息. 有这种snippet的好处在于我们能够有一个比较干净统一的脚本header, 而且能够自动更新这些脚本文件上次编辑的时间. 有兴趣的同学将上面这一段加到自己的.vimrc就可以试试效果了.
 
@@ -61,7 +60,7 @@ autocmd bufwritepre *.sh call UpdateDate()
 
 于是大概试着写出了类似这样的add_header函数:
 
-```python
+<pre class="code" data-lang="python"><code>
 sh_header = """#!/bin/sh
 #
 # Author:         %(author)s
@@ -100,21 +99,21 @@ def add_header():
             }
             _range = current_buffer.range(0, 0)
             _range.append(str_content.split("\n"))
-```
+</code></pre>
 
 代码逻辑挺简单, 对于py和sh后缀的文件, 创建一个range对象, 然后把我们的header填进去即可. 我另外试过直接修改current_buffer, 不过不管用. 前面这段代码是python相关的, 而vim那一段则是这么写的:
 
-```vim
+<pre class="code" data-lang="vim"><code>
 let g:XY_HEADER_AUTHOR = "Kai Xia <xiaket@gmail.com>"
 autocmd bufread,bufnewfile * python add_header()
 autocmd bufwritepre * python update_header()
-```
+</code></pre>
 
 为了方便修改, 所以我没有限制这儿buffer的文件类型. 而是在add_header函数里确定. 理论上我们可以把对文件类型的判断放在这儿, 但是我担心当文件类型比较多时这儿会比较乱, 还是放进python函数, 至少我读起来会舒服一点儿.
 
 接下来是update_header函数, 这个函数编写相对较容易. 我本来想直接用python来进行字符串操作, 但后来觉得能重用已有的代码更是一种美德:
 
-```python
+<pre class="code" data-lang="python"><code>
 def update_header():
     import vim
     from datetime import datetime
@@ -131,7 +130,7 @@ def update_header():
 
     vim.command("silent! 1,7 s/Filename.*/Filename:       %s/e" % filename)
     vim.command("silent! 1,7 s/Last modified:.*/Last modified:  %s/e" % date)
-```
+</code></pre>
 
 相对于原来的snippet, 这儿最后的命令我用silent前置了下. 避免当文件行数少于7时vim的报错. 我本来还想用下vim模块的error这个异常, 但貌似即使我捕获了异常这个错误信息仍会显示在vim里. 干脆加上这个silent, 一了百了.
 
@@ -147,7 +146,7 @@ def update_header():
 
 最后放一段目前完成的代码, pygments对vim中的python脚本的支持还比较一般, 所以颜色可能会比较乱.<p>
 
-```vim
+<pre class="code" data-lang="vim"><code>
 " python and shell script header.
 let g:XY_HEADER_AUTHOR = "Kai Xia <xiaket@gmail.com>"
 autocmd bufread,bufnewfile * python add_header()
@@ -260,4 +259,4 @@ def update_header():
     vim.command("silent! 1,7 s/Last modified:.*/Last modified:  %s/e" % date)
     vim.current.window.cursor = (row, column)
 EOF
-```
+</code></pre>

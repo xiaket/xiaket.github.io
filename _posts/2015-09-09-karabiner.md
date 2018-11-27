@@ -1,7 +1,6 @@
 ---
 title:  "用Karabiner来自定义键盘快捷键"
 date:   2015-09-09 09:51 +0800
-lang: zh
 ref:    karabiner
 ---
 
@@ -15,7 +14,7 @@ ref:    karabiner
 
 具体做法是安装前面说过的seil, 然后将大写锁定键映射80, 将右边的command键映射为79, 对应与怪兽级的全键盘, 分别是`F20`和`F19`这两个功能键. 在我们日常的应用上, 这两个键是没有的. 这样设定是避免冲突. 然后, 我在系统设置里将切换输入法的按键调整成了CapsLock(显示的是F20). 在Karabinerd配置里将F19映射成了Hyper键:
 
-```xml
+<pre class="code" data-lang="xml"><code>
   <item>
     <name>F18 to Hyper</name>
     <identifier>private.f18tohyper</identifier>
@@ -26,11 +25,11 @@ ref:    karabiner
       KeyCode::ESCAPE
     </autogen>
   </item>
-```
+</code></pre>
 
 即, 我按下右边的command, 映射后按下的键是左边的Command/Option/Shift/Control/Escape一起按. 这样, 我的右边的command键就成了一个特殊的修饰键. 我们就能自定义一些组合键, 例如:
 
-```xml
+<pre class="code" data-lang="xml"><code>
   <!-- safari -->
   <vkopenurldef>
     <name>KeyCode::VK_OPEN_URL_APP_SAFARI</name>
@@ -47,7 +46,7 @@ ref:    karabiner
       KeyCode::VK_OPEN_URL_APP_SAFARI,
     </autogen>
   </item>
-```
+</code></pre>
 
 这儿, 我先定义了一个特殊的虚拟按键, 功能是呼出Safari. 然后将Hyper-S映射到这个特殊的虚拟按键. 以此, 我们就能够实现文章开头提到的, 按下右边的command和s后调出safari了.
 

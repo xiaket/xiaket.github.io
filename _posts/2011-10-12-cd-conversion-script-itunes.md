@@ -1,7 +1,6 @@
 ---
 title:  "又一个iTunes脚本"
 date:   2011-10-12 11:16 +0800
-lang: zh
 ref:    cd-conversion-script-itunes
 ---
 

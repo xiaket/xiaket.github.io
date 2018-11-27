@@ -1,7 +1,6 @@
 ---
 title:  "ansible请求处理"
 date:   2018-05-23 20:33 +1000
-lang:   zh
 ref:    ansible-request-handling
 ---
 
@@ -21,7 +20,7 @@ ref:    ansible-request-handling
 
 我们的一个目的是通过Python而不是通过调用系统命令的方式来运行Ansible, 我们的出发点是官方文档中的[Python API 2.0](http://docs.ansible.com/ansible/developing_api.html#id3)一节中的样例代码:
 
-```python
+<pre class="code" data-lang="python"><code>
 #!/usr/bin/python2
 
 from collections import namedtuple
@@ -66,11 +65,11 @@ try:
 finally:
     if tqm is not None:
         tqm.cleanup()
-```
+</code></pre>
 
 这段代码是直接可以执行的: 在一台已经安装好ansible的机器上, 将上面这段代码保存为ansible_test.py, 则可以按下面的方法来执行:
 
-```
+<pre class="code" data-lang="bash"><code>
 xiaket@xyw-admin03:~$ python ansible_test.py
 
 PLAY [Ansible Play] ************************************************************
@@ -79,7 +78,7 @@ TASK [debug] *******************************************************************
 ok: [localhost] => {
     "msg": "Hello Galaxy!"
 }
-```
+</code></pre>
 
 上面的python代码中, 除掉import部分, 实际上可以分为三块内容. 第一块是对象的实例化(10-19行), 第二块是play的初始化(21-28行), 第三部分是用TaskQueueManager载入对应的实例, 运行任务(30-44行).
 
@@ -135,7 +134,7 @@ ok: [localhost] => {
 
 可见, `variable_manager`和loader里面完全没什么东西, 而options是一个标准的具名元组, 于是我们直接从inventory的初始化开始看. 去掉注释和不那么重要的内部缓存初始化后, Inventory的`__init__`代码如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 class Inventory(object):
     def __init__(self, loader, variable_manager, host_list=C.DEFAULT_HOST_LIST):
         self.host_list = host_list
@@ -146,13 +145,13 @@ class Inventory(object):
         self.groups = {}
 
         self.parse_inventory(host_list)
-```
+</code></pre>
 
 基本就是将loader和`variable_manager`存到实例属性中去, 然后用`parse_inventory`方法来解析`host_list`. 在看`parse_inventory`的代码之前, 我们插播一下ansible获取配置的方式. 上面初始化的时候使用了C这个变量, 实际上它来自:
 
-```python
+<pre class="code" data-lang="python"><code>
 from ansible import constants as C
-```
+</code></pre>
 
 这个import. 这个模块中放全局变量们. 大部分属性都是通过一个叫`get_config`的函数加载的. 其逻辑是, 先看环境变量, 然后看本地配置文件, 如果都找不到对应的属性名或者任何过程中出异常, 则使用默认值. 拿到值后根据`get_config`中指定的值的类型做适当的类型转换. 例如, 对于`C.DEFAULT_MODULE_PATH`这个值, 它会先去环境变量中找`ANSIBLE_LIBRARY`这个值, 找不到则去默认的配置文件的default节中找library这个值, 如果仍找不到, 则使用默认值`None`. 由于历史原因, 我们刚才看到的`C.DEFAULT_HOST_HOST`这个值会更复杂一点儿, 它会先去环境变量中找`ANSIBLE_INVENTORY`这个值, 找不到则去默认的配置文件的default节中找inventory这个值, 如果仍找不到, 则去环境变量中找`ANSIBLE_HOSTS`, 然后去找配置文件中的hostfile字段, 如果到这儿仍没找到, 则使用默认值`'/etc/ansible/hosts'`.
 
@@ -162,18 +161,18 @@ from ansible import constants as C
 
 我们接下来看Play. 这货的实例化阶段就复杂多了. 初始化后的属性也有一堆. 首先看这个类的定义, 这个类定义时继承了三个类:
 
-```python
+<pre class="code" data-lang="python"><code>
 class Play(Base, Taggable, Become):
     def __init__(self):
         super(Play, self).__init__()
 
         self._included_path = None
         self.ROLE_CACHE = {}
-```
+</code></pre>
 
 其中, Become是权限控制相关的基类, 我们先可以不管. Taggable是控制任务tag属性的类, 这个功能的介绍可以参考[官方文档](http://docs.ansible.com/ansible/playbooks_tags.html). 我们现在也可以忽略. 先直接看Base这个基类.
 
-```python
+<pre class="code" data-lang="python"><code>
 class Base:
     def __init__(self):
         # initialize the data loader and variable manager, which will be provided
@@ -189,11 +188,11 @@ class Base:
 
         # and init vars, avoid using defaults in field declaration as it lives across plays
         self.vars = dict()
-```
+</code></pre>
 
 我们可以看到, 这段逻辑里除了设置一些空属性外, 做了两件事情: 一件是给自己添加了一个uuid, 另一件是调用`_initialize_base_attributes`方法, 真正去设置属性:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _initialize_base_attributes(self):
         # each class knows attributes set upon it, see Task.py for example
         self._attributes = dict()
@@ -210,11 +209,11 @@ class Base:
             # Place the value into the instance so that the property can
             # process and hold that value/
             setattr(self, name, value.default)
-```
+</code></pre>
 
 看到这段代码, 自然必须先去理解`self._get_base_attributes`的逻辑. 为了方便理解, 我们将这段代码适当补全:
 
-```python
+<pre class="code" data-lang="python"><code>
 from functools import partial
 from inspect import getmembers
 
@@ -247,21 +246,21 @@ class Base:
                 base_attributes[name] = value
         BASE_ATTRIBUTES[self.__class__] = base_attributes
         return base_attributes
-```
+</code></pre>
 
 即, 首先检查自己是不是在缓存里面, 如果在缓存里面, 直接返回. 然后建一个空字典`base_attributes`, 将符合条件的类变量及其对应的值全部放进这个字典. 对于上面这段精简过的代码, 循环完成后, `base_attributes`的内容会是:
 
-```python
+<pre class="code" data-lang="python"><code>
 {
     'connection': FieldAttribute(isa='string'),
     'port': FieldAttribute(isa='int'),
     'remote_user': FieldAttribute(isa='string'),
 }
-```
+</code></pre>
 
 另外需要注意的是, 我们现在面对的不是Base这个类的实例化, 而是Play这个类的实例化. 因此, Become和Taggable这两个基类中的属性也会出现在`_get_base_attrributes`的返回结果中. 现在, 我们可以回头去看`_initialize_base_attribute`中的逻辑了. 对于我们拿到的每个类属性, 都给Base这个类设置上属性, 并给实例设置这个属性. 具体给类设置属性的时候, 三个静态方法的代码为:
 
-```python
+<pre class="code" data-lang="python"><code>
     @staticmethod
     def _generic_g(prop_name, self):
         method = "_get_attr_%s" % prop_name
@@ -280,7 +279,7 @@ class Base:
     @staticmethod
     def _generic_d(prop_name, self):
         del self._attributes[prop_name]
-```
+</code></pre>
 
 在Base中, 实际上没有定义任何`_get_attr_xxx`的类方法. 只有在Become/Block/Taggable/Task中有这个定义. 可以看出只有对于特殊的属性, 才需要在子类的定义中为这些属性添加这些方法. 另外, 为类和实例都设置这个属性也许是为了方便获取类里面内置的默认值(吐槽: 你直接加个下划线去拿, 或者统一给一个get方法, 在get方法里处理这个`_get_attr_xxx`的逻辑不就行了吗, 你这儿的set和del基本没做事啊). 不得不说, 为了给这些属性在适当的地方设上适当的值, ansible也是操碎了心.
 
@@ -288,30 +287,30 @@ class Base:
 
 至此, 我们已经了解了Play的实例化过程, 我们接下来看具体的加载过程:
 
-```python
+<pre class="code" data-lang="python"><code>
 play = Play().load(play_source, variable_manager=variable_manager, loader=loader)
-```
+</code></pre>
 
 load这个方法的逻辑很简单:
 
-```python
+<pre class="code" data-lang="python"><code>
     @staticmethod
     def load(data, variable_manager=None, loader=None):
         p = Play()
         return p.load_data(data, variable_manager=variable_manager, loader=loader)
-```
+</code></pre>
 
 因为在load这个方法里面Play又实例化了一次, 我们回头可以将加载的代码改成下面这样:
 
-```python
+<pre class="code" data-lang="python"><code>
 play = Play.load(play_source, variable_manager=variable_manager, loader=loader)
-```
+</code></pre>
 
 这样可以省掉一个实例化的步骤(这实例化还是略有些麻烦的, 好吧我这是洁癖).
 
 `load_data`这个方法是在Base中定义的(后面我们会在Block的初始化中再跑一次类似的逻辑):
 
-```python
+<pre class="code" data-lang="python"><code>
     def load_data(self, ds, variable_manager=None, loader=None):
         ''' walk the input datastructure and assign any values '''
 
@@ -353,11 +352,11 @@ play = Play.load(play_source, variable_manager=variable_manager, loader=loader)
 
         # return the constructed object
         return self
-```
+</code></pre>
 
 前20行没什么好玩的逻辑, 真正开始做事是从第22行开始的. 这儿, 按照类继承的逻辑, 首先被执行的是Play中定义的`preprocess_data`, 而它里面只是做了一些简单的旧变量名检查/清理后, 就调用了基类的同名方法:
 
-```python
+<pre class="code" data-lang="python"><code>
     def preprocess_data(self, ds):
         ''' infrequently used method to do some pre-processing of legacy terms '''
 
@@ -366,11 +365,11 @@ play = Play.load(play_source, variable_manager=variable_manager, loader=loader)
             if method:
                 return method(ds)
         return ds
-```
+</code></pre>
 
 这段是在说, 对于Play这个类, 按照MRO的顺序(Play-Base-Taggable-Become-object), 依次执行类里面定义的`_preprocess_data_xxx`方法, 这儿的xxx是基类名字的小写. 对于Play而言, 真正被执行的只有Become里面的`_preprocess_data_become`, 这个方法很长, 具体用途是分析sudo/提权之类的逻辑, 在我们的测试代码中不存在, 因此不进去详细看了. 我们接下来看`load_data`里面的`_validate_attributes`:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _validate_attributes(self, ds):
         '''
         Ensures that there are no keys in the datastructure which do
@@ -381,13 +380,13 @@ play = Play.load(play_source, variable_manager=variable_manager, loader=loader)
         for key in ds:
             if key not in valid_attrs:
                 raise AnsibleParserError("'%s' is not a valid attribute for a %s" % (key, self.__class__.__name__), obj=ds)
-```
+</code></pre>
 
 这是一个校验的逻辑, 检查加载的时候, 不应该有任何非官方的属性. 这是一个防止使用错误的措施.
 
 `load_data`中后面27-35行一方面检查了变量的优先级, 另一方面是做了各个不同参数的加载处理(第31行). 我们提供的参数有`name`, `hosts`, `gather_facts`, `tasks`. 而在Play及其基类中有的`_load`方法只有`_load_hosts`, `_load_tasks`:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _load_hosts(self, attr, ds):
         '''
         Loads the hosts from the given datastructure, which might be a list
@@ -409,11 +408,11 @@ play = Play.load(play_source, variable_manager=variable_manager, loader=loader)
                 ds[idx] = "%s" % item
 
         return ds
-```
+</code></pre>
 
 看过`_load_hosts`可以发现它没做什么特别的事情(除了将`'localhost'`类型转换成`['localhost']`外). 我们接下来看处理task加载的`_load_task`:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _load_tasks(self, attr, ds):
         '''
         Loads a list of blocks from a list which may be mixed tasks/blocks.
@@ -423,11 +422,11 @@ play = Play.load(play_source, variable_manager=variable_manager, loader=loader)
             return load_list_of_blocks(ds=ds, play=self, variable_manager=self._variable_manager, loader=self._loader)
         except AssertionError:
             raise AnsibleParserError("A malformed block was encountered.", obj=self._ds)
-```
+</code></pre>
 
 可见它基本上就是对`load_list_of_blocks`的异常处理而已. 我们来看这个函数的逻辑, 它是在`ansible.playbook.helpers`中定义的:
 
-```python
+<pre class="code" data-lang="python"><code>
 def load_list_of_blocks(ds, play, parent_block=None, role=None, task_include=None, use_handlers=False, variable_manager=None, loader=None):
     '''
     Given a list of mixed task/block data (parsed from YAML),
@@ -463,7 +462,7 @@ def load_list_of_blocks(ds, play, parent_block=None, role=None, task_include=Non
                 block_list.append(b)
 
     return block_list
-```
+</code></pre>
 
 首先需要注意的是, 这儿传进来的ds实际上是我们的测试代码中的`[ dict(action=dict(module='debug', args=dict(msg='Hello Galaxy!'))) ]`. 因为在`load_data`的第33行, 我们已经对ds做了一次取属性操作. 顺便吐槽下ansible这段代码, ds这个名字是数据结构本身就很让人无语了, 你还这么乱用, 不嫌眼晕不?
 
@@ -478,17 +477,17 @@ def load_list_of_blocks(ds, play, parent_block=None, role=None, task_include=Non
 
 我们具体来看代码:
 
-```python
+<pre class="code" data-lang="python"><code>
     @staticmethod
     def load(data, play=None, parent_block=None, role=None, task_include=None, use_handlers=False, variable_manager=None, loader=None):
         implicit = not Block.is_block(data)
         b = Block(play=play, parent_block=parent_block, role=role, task_include=task_include, use_handlers=use_handlers, implicit=implicit)
         return b.load_data(data, variable_manager=variable_manager, loader=loader)
-```
+</code></pre>
 
 `Block.is_block`是一个检查工具, 这儿返回的值是False. 接下来是Block这个类的实例化工作. 这个类继承了`Base`, `Become`, `Conditional`和`Taggable`四个类, 初始化仍和之前一样. 而这儿跑的`load_data`我们在前面已经见过了. 此时, 运行的`preprocess_data`是在Block中被定义的:
 
-```python
+<pre class="code" data-lang="python"><code>
     def preprocess_data(self, ds):
         '''
         If a simple task is given, an implicit block for that single task
@@ -502,11 +501,11 @@ def load_list_of_blocks(ds, play, parent_block=None, role=None, task_include=Non
                 return super(Block, self).preprocess_data(dict(block=[ds]))
 
         return super(Block, self).preprocess_data(ds)
-```
+</code></pre>
 
 这儿的data就是我们上面表格中的字典, 我们已经测试过, 它不是一个Block, 真正运行的是`return super(Block, self).preprocess_data(dict(block=[ds]))`. 即仍是按MRO的顺序, 依次运行基类中的`_preprocess_data_xxx`方法. 这儿, Block的基类中没有跑什么有意义的代码, 可以不用管了. 接下来是`load_data`中的`_validate_attributes`, 也没做什么事情(没被定义, 按Base里的基本逻辑跑的). 我们可以看变量加载了, 具体来说, 是在Block中被定义的`_load_block`:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _load_block(self, attr, ds):
         try:
             return load_list_of_tasks(
@@ -521,7 +520,7 @@ def load_list_of_blocks(ds, play, parent_block=None, role=None, task_include=Non
             )
         except AssertionError:
             raise AnsibleParserError("A malformed block was encountered.", obj=self._ds)
-```
+</code></pre>
 
 仍是对`load_list_of_tasks`的异常处理. 我们仍按之前的做法, 将传给这个函数的变量总结一下:
 
@@ -535,7 +534,7 @@ def load_list_of_blocks(ds, play, parent_block=None, role=None, task_include=Non
 
 `load_list_of_tasks`也是在helper中被定义的:
 
-```python
+<pre class="code" data-lang="python"><code>
 def load_list_of_tasks(ds, play, block=None, role=None, task_include=None, use_handlers=False, variable_manager=None, loader=None):
     '''
     Given a list of task datastructures (parsed from YAML),
@@ -573,24 +572,24 @@ def load_list_of_tasks(ds, play, block=None, role=None, task_include=None, use_h
         task_list.append(t)
 
     return task_list
-```
+</code></pre>
 
 根据我们的数据, 我们可以去掉不少芜杂的空变量和判断, 将上面的代码简化如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 def load_list_of_tasks(ds, play, block, variable_manager, loader):
     return [
           Block.load(
             ds[0], play=play, parent_block=block, variable_manager=variable_manager, loader=loader,
         ),
     ]
-```
+</code></pre>
 
 得, 又回到Block.load. 这个前面有代码了. 和前面执行的主要区别是有了一个`parent_block`参数, 而且此时`is_block`是True了. 具体过程我们不细跟了, 我们一起来看下最后实现的效果吧. 首先我们显然有一个play实例, 这个实例有一个tasks属性, 这个属性是一个列表, 里面是所以需要被执行的block. 因为我们只有一个任务, 于是可以定义一个新变量:
 
-```python
+<pre class="code" data-lang="python"><code>
 block = play.tasks[0]
-```
+</code></pre>
 
 此时, 这个block有个名为block的属性, 里面是任务列表(对, 数据类型是列表了, 不能顾名思义认为它是一个Block实例), 列表里面有一个Task实例. 我们赋给这个实例了一些属性, 例如action的值为debug, args为一个字典, 其值为`{'msg': 'Hello Galaxy!'}`.
 
@@ -618,7 +617,7 @@ block = play.tasks[0]
 
 直接看TQM的run方法, 为了简化代码, 我们删除了在我们的测试代码中没有起任何作用的代码:
 
-```python
+<pre class="code" data-lang="python"><code>
     def run(self, play):
         new_play = play.copy()
 
@@ -644,11 +643,11 @@ block = play.tasks[0]
         play_return = strategy.run(iterator, play_context)
         self._cleanup_processes()
         return play_return
-```
+</code></pre>
 
 首先play将自己做了一份镜像出来, 免得自己本体被修改. 然后计算了一共要开几个连接/处理进程来处理这次请求. 接下来是在TQM的`_initialize_processes`里:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _initialize_processes(self, num):
         self._workers = []
 
@@ -659,13 +658,13 @@ block = play.tasks[0]
 
         self._result_prc = ResultProcess(self._final_q, self._workers)
         self._result_prc.start()
-```
+</code></pre>
 
 对于我们的测试程序, 显然只需要起一个进程, 因此, 这儿的`_workers`列表中只有一个成员. 另外, 这儿会起一个本地的ResultProcess进程来接受服务器返回的内容. ResultProcess是一个`multiprocessing.Process`的子类, 它的`__init__`没有赋值以外的逻辑. 因为我们在`_initialize_processes`中在实例化了`ResultProcess`后马上运行了这个实例的start方法, 实际上运行的是`ResultProcess`的run方法. 这个run方法的逻辑是在处理结果, 根据不同的结果决定是否做一些回调. 具体的逻辑我们不细看了.
 
 我们回头看TQM的run方法. 在初始化结果进程后, ansible将play的相关东西打包成了一个PlayContext.(吐槽, 你包这么多层不累吗...), 这货的初始化里面也是各种赋值, 我们不细看了. 需要细看的是PlayIterator的实例化, 在这个过程中, ansible为每个host设置了一个状态, 方便后面根据各种需求来做执行控制, 根据我们简单的测试case, 这个实例化过程可以简化为:
 
-```python
+<pre class="code" data-lang="python"><code>
 class PlayIterator:
     def __init__(self, inventory, play, play_context, variable_manager, all_vars, start_at_done=False):
         self._play = play
@@ -679,11 +678,11 @@ class PlayIterator:
         self._host_states = {}
         for host in inventory.get_hosts(self._play.hosts):
              self._host_states[host.name] = HostState(blocks=self._blocks)
-```
+</code></pre>
 
 这儿`self._blocks`会是有四个block实例的列表, block实例的`filter_tagged_tasks`实际上没起任何作用, 真正将一个task变成四个task的是Play实例的compile方法:
 
-```python
+<pre class="code" data-lang="python"><code>
     def compile(self):
         '''
         Compiles and returns the task list for this play, compiled from the
@@ -712,7 +711,7 @@ class PlayIterator:
         block_list.append(flush_block)
 
         return block_list
-```
+</code></pre>
 
 由于我们没有`pre_tasks`/`role`/`post_tasks`这些东西, 所以我们正好得到四个block, 即一个flush, 一个debug, 和两个flush.
 
@@ -720,15 +719,15 @@ class PlayIterator:
 
 回到PlayIterator的初始化里面来, 这儿的`_host_states`的值会是:
 
-```
+<pre class="code" data-lang="python"><code>
 {'localhost': HOST STATE: block=0, task=0, rescue=0, always=0, role=None, run_state=0, fail_state=0, pending_setup=False, tasks child state? None, rescue child state? None, always child state? None}
-```
+</code></pre>
 
 实际上这是一个单键字典, 其值为一个HostState实例. 具体的各个值都在上面写清楚了, 都是默认值(我们的测试案例实在简单).
 
 前面我们已经知道, 这儿`new_play`的strategy已经被赋予了一个默认值linear. `strategy_loader`的逻辑不必深究, 需要了解的是, `ansible.plugins.strategy.linear`这个策略类被加载并实例化了. 后面的第24行, 我们将调用这个策略实例的run方法来真正执行操作. linear中实际的策略类的名字是StrategyModule, 它的初始化定义在`ansible.plugins.strategy`中. 不过只有基本的赋值逻辑, 我们不细说了. 直接看linear中的run方法. 这个方法很长, 有近200行, 在加上在这个方法的结尾还要执行基类里的run方法, 又有小几十行. 我们先厘清代码, 只关注主干的逻辑.
 
-```python
+<pre class="code" data-lang="python"><code>
     def run(self, iterator, play_context):
         '''
         The linear strategy is simple - get the next task and queue
@@ -750,11 +749,11 @@ class PlayIterator:
         # and runs any outstanding handlers which have been triggered
 
         return super(StrategyModule, self).run(iterator, play_context, result)
-```
+</code></pre>
 
 上面整个run方法的最外层逻辑. 这段还是挺清楚的, 写一个死循环, 只有当满足条件才跳出. 接下来我们看try-except里面的逻辑. 经过清理后, 这段逻辑为:
 
-```python
+<pre class="code" data-lang="python"><code>
     try:
         hosts_left = [host for host in self._inventory.get_hosts(iterator._play.hosts) if host.name not in self._tqm._unreachable_hosts]
         work_to_do = False
@@ -785,11 +784,11 @@ class PlayIterator:
         host_results.extend(results)
     except (IOError, EOFError) as e:
         return False
-```
+</code></pre>
 
 这儿的`hosts_left`仍应是单个localhost的列表, 然后调用了`_get_next_task_lockstep`方法. 我们刚才看到, 经过Play实例的compile方法, 我们的一个任务变成了一个有四个任务的组合任务, 其中只有一个是我们的debug, 三个都是执行`flush_handlers`的meta任务. 我们现在看看`_get_next_task_lockstep`方法是怎么具体调配这四个任务的, 经过清理后, 这个方法的代码为:
 
-```python
+<pre class="code" data-lang="python"><code>
 class StrategyModule(StrategyBase):
 
     def _get_next_task_lockstep(self, hosts, iterator):
@@ -800,11 +799,11 @@ class StrategyModule(StrategyBase):
             host_tasks[host.name] = iterator.get_next_task_for_host(host, peek=True)
 
         # more code omitted for the moment.
-```
+</code></pre>
 
 好吧, 继续跟进Iterator的`get_next_task_for_host`里面去看, 剪掉和我们无关的逻辑后, 这段代码为:
 
-```python
+<pre class="code" data-lang="python"><code>
     def get_next_task_for_host(self, host, peek=False):
 
         display.debug("getting the next task for host %s" % host.name)
@@ -822,11 +821,11 @@ class StrategyModule(StrategyBase):
 
         self._host_states[host.name] = s
         return (s, task)
-```
+</code></pre>
 
 即, 主要逻辑是拿到当前状态后, 根据当前状态来用`_get_next_task_from_state`来拿到下一个状态和当前任务, 然后将机器状态设为下一个状态并返回. 具体这个方法要继续跟进去看, 我们去掉了rescue和always的逻辑:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _get_next_task_from_state(self, state, peek):
 
         task = None
@@ -879,13 +878,13 @@ class StrategyModule(StrategyBase):
                 break
 
         return (state, task)
-```
+</code></pre>
 
 第一次进循环的时候, `state.run_state`是`self.ITERATING_TASKS`, 后面会拿到task, 具体来说, 第一次拿到的是一个参数为`flush_handlers`的meta任务, 而此时`state.cur_regular_task`被自增了1. 在整个测试程序的运行过程中, 这段逻辑被运行了5次, 前四次依次拿到meta/debug/meta/meta这四个任务, 第五次运行的时候因为在上面这段代码的开头遇到了IndexError, 因此`state.run_state`被设置`成self.ITERATING_COMPLETE`, 递归结束.
 
 理解了这段逻辑后, 我们可以更具体地理解linear中的run方法了, 方便起见, 我将这段上面已经出现过的代码重新贴在下面. 此时, 第5行的输出我们已经能够理解了, 它会依次给出上面提到的这四个任务. 对于meta任务, 它有一个`self._execute_meta`方法, 对于非meta任务, 它会准备好任务的变量和执行环境, 设置好适当的flag, 交给`self._queue_task`来去运行这个任务. 然后会在`self._process_pending_results`中去等待结果, 看要不要根据结果的不同来执行一些逻辑. 后面的`self._wait_on_pending_results`中会去等所有机器都执行完任务.
 
-```python
+<pre class="code" data-lang="python"><code>
     try:
         hosts_left = [host for host in self._inventory.get_hosts(iterator._play.hosts) if host.name not in self._tqm._unreachable_hosts]
         work_to_do = False
@@ -916,11 +915,11 @@ class StrategyModule(StrategyBase):
         host_results.extend(results)
     except (IOError, EOFError) as e:
         return False
-```
+</code></pre>
 
 上面这段代码应该可以算是整个ansbile在任务调度部分的核心代码了. 在我们真正去看每个任务是如何执行的之前, 我们先看下`self._execute_meta`这个方法的逻辑:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _execute_meta(self, task, play_context, iterator):
         # meta tasks store their args in the _raw_params field of args,
         # since they do not use k=v pairs, so get that
@@ -937,11 +936,11 @@ class StrategyModule(StrategyBase):
         #    connection_info.connection.close()
         else:
             raise AnsibleError("invalid meta action requested: %s" % meta_action, obj=task._ds)
-```
+</code></pre>
 
 看来就是根据不同的meta任务调用一些内部函数而已. 我们先看看我们执行的`flush_andlers`:
 
-```python
+<pre class="code" data-lang="python"><code>
     def run_handlers(self, iterator, play_context):
         '''
         Runs handlers on those hosts which have been notified.
@@ -976,7 +975,7 @@ class StrategyModule(StrategyBase):
                     if not result:
                         break
         return result
-```
+</code></pre>
 
 这儿的`iterator._play.handlers`是一个空列表. 我们这儿不会执行任何东西. 在真正的ansible应用中, 这儿执行handler主要是用于在有任何变化的时候执行一些任务. 例如官方文档里一个更新apache的playbook, 只有当apache真正被升级时, 重启apache服务的handler才会被执行. 因此, handler会在每个block的结尾被运行. 更多关于handler的详细文档, 可以参考[这儿](http://docs.ansible.com/ansible/playbooks_intro.html#handlers-running-operations-on-change).
 
@@ -984,7 +983,7 @@ class StrategyModule(StrategyBase):
 
 我们接下来看一个任务是怎么被具体执行的. 即看下`self._queue_task`的逻辑. 这段代码被定义在linear这个策略的基类中:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _queue_task(self, host, task, task_vars, play_context):
         ''' handles queueing the task up to be sent to a worker '''
 
@@ -1018,14 +1017,13 @@ class StrategyModule(StrategyBase):
             display.debug("got an error while queuing: %s" % e)
             return
         display.debug("exiting _queue_task() for %s/%s" % (host, task))
-
-```
+</code></pre>
 
 里面没什么具体的逻辑, 主要是将所有的参数都传递给了WorkerProcess, 由这个类来做具体的任务执行. 这儿只是做了工作进程的调度, 并处理了一下异常. 回头来看, 我们在TQM的`_initialize_processes`中已经初始化好了一个worker, 不过没有初始化具体的工作进程, 只是将输出的队列(`rslt_q`)准备好了. 我们的WorkerProcess仍是在这里实例化的. 顺便吐槽下, 这儿的`main_q`在现在的代码中实际上从没使用.
 
 接下来, 我们先来看WorkerProcess的实例化代码:
 
-```python
+<pre class="code" data-lang="python"><code>
 class WorkerProcess(multiprocessing.Process):
     '''
     The worker thread class, which uses TaskExecutor to run tasks
@@ -1061,11 +1059,11 @@ class WorkerProcess(multiprocessing.Process):
         except ValueError:
             # couldn't get stdin's fileno, so we just carry on
             pass
-```
+</code></pre>
 
 除了复制了stdin, 这儿没什么新逻辑, 我们接着来看这个类的run方法:
 
-```python
+<pre class="code" data-lang="python"><code>
     def run(self):
         '''
         Called when the process is started, and loops indefinitely
@@ -1116,11 +1114,11 @@ class WorkerProcess(multiprocessing.Process):
                     debug("WORKER EXCEPTION: %s" % traceback.format_exc())
 
         debug("WORKER PROCESS EXITING")
-```
+</code></pre>
 
 苦命的是, 我们仍然没到这棵苹果树的树洞的底部, 得继续进TaskExecutor去看任务是怎么被执行的, 还要看TaskResult这个类是干嘛的(虽然从名字来看已经很清楚了). 这儿的run大部分是组织和异常处理的逻辑, 没有做很重的东西. 我们先看TaskExecutor吧. 这个类的实例化过程只是在变量赋值, 我们忽略. 直接看它的run方法:
 
-```python
+<pre class="code" data-lang="python"><code>
     def run(self):
         '''
         The main executor entrypoint, where we determine if the specified
@@ -1185,11 +1183,11 @@ class WorkerProcess(multiprocessing.Process):
                 pass
             except Exception as e:
                 display.debug(u"error closing connection: %s" % to_unicode(e))
-```
+</code></pre>
 
 这段看来主要时结果处理的逻辑, 例如任务成功或失败时添加适当标记和纪录等, 另外也处理了异常. 第7句的方法中处理了playbook中的with语句, 我们先略过. 真正的任务执行是在第十句(或者第37句)的`_execute`里面. 这是一个200行的大方法, 我们简化了在我们的测试脚本中完全没涉及到的逻辑, 得到下面这近四十行的代码:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _execute(self, variables=None):
         '''
         The primary workhorse of the executor system, this runs the task
@@ -1227,7 +1225,7 @@ class WorkerProcess(multiprocessing.Process):
                 break
 
         return result
-```
+</code></pre>
 
 即, 真正的执行阶段包括下面这些步骤:
 
@@ -1242,7 +1240,7 @@ class WorkerProcess(multiprocessing.Process):
 
 这段逻辑首先是在`TaskExecutor._get_connection`中, 移除和测试代码无关的逻辑后, 代码如下:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _get_connection(self, variables, templar):
         '''
         Reads the connection property for the host, and returns the
@@ -1275,7 +1273,7 @@ class WorkerProcess(multiprocessing.Process):
             raise AnsibleError("the connection plugin '%s' was not found" % conn_type)
 
         return connection
-```
+</code></pre>
 
 这儿我们从`self._play_context`中拿到的`conn_type`是`localhost`, 这来源于实例化后Option中的相关属性. 我们可以看到, 这个方法中默认使用了ssh, 只有当ssh由于种种原因不可用时, 才使用paramiko. 具体获得连接是在第28行. 这个`connection_loader`属性是在`ansible.plugins`中定义的. 具体作用是根据不同的类型加载不同的连接plugin.
 
@@ -1285,7 +1283,7 @@ ansible所有支持的连接plugin都在`ansible.plugins.connection`中. 按照�
 
 这儿的handler和前文中的通知handler不是一个东西, 是ansible运行的模块中的处理器. 在`_execute`那段代码中, 这个值的初始化是在第17行, 调用了`self._get_action_handler`方法:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _get_action_handler(self, connection, templar):
         '''
         Returns the correct action plugin to handle the requestion task action
@@ -1314,7 +1312,7 @@ ansible所有支持的连接plugin都在`ansible.plugins.connection`中. 按照�
             raise AnsibleError("the handler '%s' was not found" % handler_name)
 
         return handler
-```
+</code></pre>
 
 这时, 我们一开始在测试脚本中传递给ansible的模块名`debug`终于在这儿又一次出现了. 这儿第6行中就触发执行了查找模块的逻辑, 结果找到了, 因此这儿单handler_name就是`debug`. 后面做了一个模块的初始化就返回了. 模块的初始化里面也没做什么特别的事情, 就不细说了.
 
@@ -1322,7 +1320,7 @@ ansible所有支持的连接plugin都在`ansible.plugins.connection`中. 按照�
 
 具体执行任务是调用debug这个模块的run方法:
 
-```python
+<pre class="code" data-lang="python"><code>
 class ActionModule(ActionBase):
     ''' Print statements during execution '''
 
@@ -1365,11 +1363,11 @@ class ActionModule(ActionBase):
         result['_ansible_verbose_always'] = True
 
         return result
-```
+</code></pre>
 
 这儿前面是校验, 第18行是拿到结果, 后面是结果处理. 基本逻辑也很简单. 第18行调用了基类的run方法, 如下:
 
-```python
+<pre class="code" data-lang="python"><code>
     @abstractmethod
     def run(self, tmp=None, task_vars=None):
         """ Action Plugins should implement this method to perform their
@@ -1395,7 +1393,7 @@ class ActionModule(ActionBase):
                 module_args = self._task.args,
             )
         return results
-```
+</code></pre>
 
 没做什么事情, 由于invocation这个属性在debug模块中也没处理, 于是可以认为返回了一个空字典. 至此, ansible的请求处理已经结束了, 结果处理我们之前的代码中多少有些涉及, 基本上是返回一个字典, 里面装着所有的信息, 不细讲了.
 
@@ -1407,7 +1405,7 @@ class ActionModule(ActionBase):
 
 首先是连接插件. ansible所支持的连接插件的路径是`ansible.plugins.connection`. 例如, 我们正常执行命令使用的是系统ssh命令, 但如果使用的是paramiko这个ssh库, 这个命令肯定就不一样了. 又比如, ansible还支持使用Windows Remote Mangement协议来管理远程服务器, 这个时候执行命令是在HTTP/HTTPS上又包装了的一层WinRM. 命令自然也不一样. 我们这儿简单看下ssh这个连接插件的fetch_file方法:
 
-```python
+<pre class="code" data-lang="python"><code>
     def fetch_file(self, in_path, out_path):
         ''' fetch a file from remote to local '''
 
@@ -1431,7 +1429,7 @@ class ActionModule(ActionBase):
 
         if returncode != 0:
             raise AnsibleError("failed to transfer file from {0}:\n{1}\n{2}".format(in_path, stdout, stderr))
-```
+</code></pre>
 
 第4行实际上基类的`fetch_file`里面没做事. 后面就是根据配置来选择使用scp/sftp, 将远程文件复制到本地. 又比如, 作为一个API,  ssh.py中需要提供`exec_command`方法. 实际上, 这个方法里面都是在处理异常, 调用了`_exec_command`里的逻辑, 而`_exec_command`又是对`_run`的简单包装, 真正的逻辑都是在`_run`(240行的大东西)里面.
 
@@ -1439,7 +1437,7 @@ class ActionModule(ActionBase):
 
 这个插件的存在也是有显著的目的. 因为处理完远程登录后, 各个机器上的shell是不一样的, csh和bash的语法就有很大的区别, 又比如windows下必须要使用powershell. 这一层shell插件主要就是在处理这种差异性. sh.py这个模块比较大, 里面是整个bash/sh类shell的逻辑. 而csh.py文件就小多了:
 
-```python
+<pre class="code" data-lang="python"><code>
 class ShellModule(ShModule):
 
     # How to end lines in a python script one-liner
@@ -1450,11 +1448,11 @@ class ShellModule(ShModule):
 
     def env_prefix(self, **kwargs):
         return 'env %s' % super(ShellModule, self).env_prefix(**kwargs)
-```
+</code></pre>
 
 有了适当的逻辑隔离后, csh就是在sh的基础上, 修改了一些csh特异性的语法. 对应的, sh中的这些值为:
 
-```python
+<pre class="code" data-lang="python"><code>
 class ShellModule(object):
 
     _SHELL_EMBEDDED_PY_EOL = '\n'
@@ -1472,7 +1470,7 @@ class ShellModule(object):
         )
         env.update(kwargs)
         return ' '.join(['%s=%s' % (k, pipes.quote(text_type(v))) for k,v in env.items()])
-```
+</code></pre>
 
 回头看下, 果然, powershell.py的文件大小和sh.py差不多. 这也是因为实际上要写的逻辑都有那么多. 像csh.py这种只需要通过继承来改变一些类变量就能搞定一切的模块肯定不会多.
 
@@ -1480,7 +1478,7 @@ class ShellModule(object):
 
 我们之前实际上已经看过一个debug插件了. 不过那个插件没做什么事情. 为了对这部分逻辑更深入的了解一番, 我们细看一下`ansible.plugins.action.script`里的代码:
 
-```python
+<pre class="code" data-lang="python"><code>
 class ActionModule(ActionBase):
     TRANSFERS_FILES = True
 
@@ -1558,7 +1556,7 @@ class ActionModule(ActionBase):
         result['changed'] = True
 
         return result
-```
+</code></pre>
 
 这段代码虽然有些长, 但逻辑并不复杂. 第5-17行是在做准备工作; 第19-37行是处理脚本文件在本地已经存在的情形. 后面就是将远程路径拼出来后将文件传至远程服务器, 然后视情况加上可执行权限后执行.
 
@@ -1568,26 +1566,26 @@ class ActionModule(ActionBase):
 
 我们在前一个部分里看到的那个测试脚本是由官方文档提供的, 其目的是演示ansible的请求是如何具体被处理的. 但是, 我们平常运行ansible的方式不是这样的. 首先, 即使是进行测试, 我们也会将常见的配置写到配置文件中, 并会提供一个inventory文件. 执行类似下面的命令:
 
-```
+<pre class="code" data-lang="bash"><code>
 [xiaket@dirac ~]ansible local -m shell -a "echo 'ok'"
 i.admin.i | SUCCESS | rc=0 >>
 ok
-```
+</code></pre>
 
 其中, inventory文件内容类似:
 
-```
+<pre class="code" data-lang="bash"><code>
 [xiaket@dirac ~]cat hosts
 [3157]
 223.252.222.118
 
 [local]
 i.admin.i
-```
+</code></pre>
 
 配置文件可能类似:
 
-```
+<pre class="code" data-lang="bash"><code>
 [xiaket@dirac ~]cat .ansible.cfg
 [defaults]
 remote_port = 3220
@@ -1598,7 +1596,7 @@ log_path=/Users/xiaket/var/log/ansible.log
 ssh_args = -o ControlMaster=auto -o ControlPersist=1800s -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=6 -o ServerAliveCountMax=5
 control_path = %(directory)s/%%h-%%r
 pipelining=True
-```
+</code></pre>
 
 然后, 对于日常维护的情况, 我们通常都是编写好ansible的playbook, 然后通过运行playbook来对远程服务器进行管理的. 我们接下来就看看这样的两种情形中, ansible是怎么处理请求的.
 
@@ -1606,7 +1604,7 @@ pipelining=True
 
 我们刚刚已经给出了通过ansible命令来运行ansible的样例. 我们来深入分析这一命令执行过程. 首先是从ansible命令开始, 经清理后, 其代码如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 if __name__ == '__main__':
 
     display = LastResort()
@@ -1660,30 +1658,30 @@ if __name__ == '__main__':
         else:
             display.display("to see the full traceback, use -vvv")
         sys.exit(250)
-```
+</code></pre>
 
 这儿基本上就是在处理异常了. 真正的逻辑实际上是拿到自己的名字, 匹配到适合的cli. 具体到我们的命令, 匹配到的是AdhocCLI, 因此, 上面这段50多行的逻辑可以简化为:
 
-```python
+<pre class="code" data-lang="python"><code>
 import sys
 from ansible.cli.adhoc import AdHocCLI as mycli
 
 cli = mycli(sys.argv)
 cli.parse()
 sys.exit(cli.run())
-```
+</code></pre>
 
 事实上, 如果将上面这段代码存成ansible_test.py, 则我们可以用下面的方式来运行这个脚本, 并得到和之前一致的结果:
 
-```
+<pre class="code" data-lang="bash"><code>
 [xiaket@dirac ~]python ansible_test.py local -m shell -a "echo 'ok'"
 i.admin.i | SUCCESS | rc=0 >>
 ok
-```
+</code></pre>
 
 我们进AdHocCLI里面看, 它的实例化代码在其基类CLI的__init__里面, 除了赋值外没其他逻辑, 我们忽略, 后面的parse和run方法是我们关心的, 首先是parse:
 
-```python
+<pre class="code" data-lang="python"><code>
     def parse(self):
         ''' create an options parser for bin/ansible '''
 
@@ -1717,11 +1715,11 @@ ok
         self.validate_conflicts(runas_opts=True, vault_opts=True, fork_opts=True)
 
         return True
-```
+</code></pre>
 
 它里面有使用其基类CLI的base_parser方法. 里面实际上是构建了一个optparse的实例, 添加了各种默认的参数, 这儿在AdHocCLI里面又额外添加了一些AdHoc运行方式所特有的参数. 例如我们传入的-m, 就在这儿被纪录了. 我们可以开始看run方法了, 精简后, 这个run方法如下:
 
-```python
+<pre class="code" data-lang="python"><code>
     def run(self):
         ''' use Runner lib to do SSH things '''
         # only thing left should be host pattern
@@ -1766,11 +1764,11 @@ ok
                 self._tqm.cleanup()
 
         return result
-```
+</code></pre>
 
 可以看到, 这儿和我们前面的测试代码极其相似. 实际上, 后面的代码运行一直很相似, 直到在TaskExecutor获得handler那一步中:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _get_action_handler(self, connection, templar):
         '''
         Returns the correct action plugin to handle the requestion task action
@@ -1784,11 +1782,11 @@ ok
             handler_name = 'normal'
         else:
             handler_name = 'async'
-```
+</code></pre>
 
 之前我们运行的时候, `self._task.action`是debug, 是一个内置的action. 而这次我们运行的是`-m shell`, 运行一个shell命令, 因此, 这儿拿到的`handler_name`是`normal`. 于是, 后面运行这个handler的方式也不一样了, 实际上调用的是ansible.plugins.action.ActionBase的`_execute_module`方法. 精简后, 这段代码为:
 
-```python
+<pre class="code" data-lang="python"><code>
     def _execute_module(self, module_name=None, module_args=None, tmp=None, task_vars=None, persist_files=False, delete_remote_tmp=True):
         '''
         Transfer and run a module along with its arguments.
@@ -1878,7 +1876,7 @@ ok
             data['stdout_lines'] = data.get('stdout', u'').splitlines()
 
         return data
-```
+</code></pre>
 
 这段代码比较长, 分析后, 它分为如下这几段:
 
@@ -1896,20 +1894,20 @@ ok
 
 没特别细看逻辑, 不过估计这个动态生成的内容不会是一股脑将所有东西全传给对面, 而是根据需要来的. 另外, 一些我们传递给ansible的参数也被写进了这个文件:
 
-```python
+<pre class="code" data-lang="python"><code>
 # some code here
 ANSIBLE_VERSION = '2.0.1.0'
 
 MODULE_ARGS = "<<INCLUDE_ANSIBLE_MODULE_ARGS>>"
 MODULE_COMPLEX_ARGS = '{"_raw_params": "echo \'ok\'", "_uses_shell": true}'
 # some more code here.
-```
+</code></pre>
 
 在第3步中, 计算出来的命令是:
 
-```bash
+<pre class="code" data-lang="bash"><code>
 LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_MESSAGES=en_US.UTF-8 /usr/bin/python /home/xiaket/.ansible/tmp/ansible-tmp-1457595446.2-114935694221703/command; rm -rf "/home/xiaket/.ansible/tmp/ansible-tmp-1457595446.2-114935694221703/" > /dev/null 2>&1
-```
+</code></pre>
 
 嗯, 先按需生成一个文件, 然后传过去, 再ssh过去执行这个文件. ansible大概就这三句话.
 

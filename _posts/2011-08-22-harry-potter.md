@@ -1,7 +1,6 @@
 ---
 title:  "Harry Potter"
 date:   2011-08-22 00:05 +0800
-lang: zh
 ref:    harry-potter
 ---
 

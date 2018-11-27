@@ -1,7 +1,6 @@
 ---
 title:  "从www.goodreads.com爬书籍信息"
 date:   2013-08-17 22:39 +0800
-lang: zh
 ref:    goodreads
 ---
 
@@ -13,7 +12,7 @@ ref:    goodreads
 
 逻辑就是这么简单, 放代码吧:
 
-```sh
+<pre class="code" data-lang="bash"><code>
 #!/bin/sh
 #
 # Author:         Kai Xia <xiaket@gmail.com>
@@ -56,7 +55,7 @@ do
         fi
     done
 done
-```
+</code></pre>
 
 一开始这儿拿作者和拿书籍目录都可以用find来做, 不过没这么做. cut在这儿用来处理ls -l的输出很舒服. 接下来从.opf文件里面拿到书籍的isbn信息用了两次grep, 一次拿出这一行来, 一次找出具体的isbn. 接下来, 网络比较慢, 只能在curl里面加上一个重试的参数. 跑了一两次脚本中发现如果书籍找不到, goodreads的API会返回一个字符串提醒你. 如果我们真的拿到json内容了, 用bash处理显然是不合适的, 用python来处理就方便多了. 拿到评分后用bc计算一下, 来为后面进一步筛选做准备.
 

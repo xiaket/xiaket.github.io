@@ -1,7 +1,6 @@
 ---
 title:  "重新编译scim解决半角标点的问题"
 date:   2010-03-25 13:12 +0800
-lang: zh
 ref:    scim-full-width-punctuation
 ---
 
@@ -16,11 +15,11 @@ scim的设置界面(scim-setup)里肯定是没有这个选项的了. 而scim的�
 
 偶们接下来就该编译了. 去[slackbuilds.org](http://www.slackbuilds.org)上找scim-pinyin的slackbuild文件, 没找到. 无奈, 尝试了下src2pkg, 貌似有点问题. 哎哎, 还是找个.Slackbuild文件来比较靠谱. 这个也不算太难找, Google了下, 发现[这个地方](http://slackware.osuosl.org/slackware_source/x/scim-pinyin/)有, 下载拿到. 接下来编译. 结果发现两类错误, 第一类是报找不到.h文件, 这个由于没有正确设置-I参数而引起的. 我本希望修改.Slackbuild文件, 添加了一个-I能够解决这个问题, 后来发现编译时命令行里的-I仍然没有使用我指定的参数, 懒得管了, 做了几个软链接丢到了/usr/include, 这样就没问题了:
 
-```bash
+<pre class="code" data-lang="bash"><code>
 [root@slk:/usr/include]ln -s /usr/src/linux/include/linux .
 [root@slk:/usr/include]ln -s /usr/src/linux/arch/x86/include/asm .
 [root@slk:/usr/include]ln -s /usr/src/linux/include/asm-generic .
-```
+</code></pre>
 
 第二个问题是报strlen这样的函数没有被定义, Google了下, [前人给出了解决方案](http://blog.csdn.net/sanlinux/archive/2010/01/10/5171234.aspx). 为啥又需要修改源代码呢? 哎, 再次把刚才打好的包解开, 按照这个方案里的提示进行了修改. 修改的时候还发现了一个作者的笔误, 在scim_special_table.cpp里, 他将"#define Uses_C_STRING"写成了"#define Uscs_C_STRING". 嗯, 莎翁说得好, To err is human.
 

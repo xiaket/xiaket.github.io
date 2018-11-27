@@ -1,7 +1,6 @@
 ---
 title:  "svn避免跟踪某些目录"
 date:   2013-03-19 11:59 +0800
-lang: zh
 ref:    subversion
 ---
 
@@ -11,25 +10,25 @@ ref:    subversion
 
 然后要在主目录下执行下面的命令来实现我们刚才所说的需求:
 
-```sh
+<pre class="code" data-lang="bash"><code>
 svn update --set-depth=exclude dir1 dir2 dir3
-```
+</code></pre>
 
 这儿dir1/dir2/dir3是你不期望跟踪的子目录的名字. 执行完这个操作后, 会有类似下面的输出:
 
-```sh
+<pre class="code" data-lang="bash"><code>
 [xiaket@rondo:~/.Repos/projects]svn update --set-depth=exclude dir1 dir2 dir3
 D    dir1
 D    dir2
 D    dir3
-```
+</code></pre>
 
 淡定, svn up是不会影响到主干的. 这儿的D是本地的标注而已. 而且, 如果这个目录存在, svn会删除这个目录.
 
 如果你还需要在某个子目录下取消跟踪某些孙目录的跟踪, 进入这个子目录, 重复执行上面的命令即可. 另外, 如果你哪天改变主意了, 认为dir3这个目录值得自己跟踪一下进展, 可以执行下面的命令:
 
-```sh
+<pre class="code" data-lang="bash"><code>
 svn update --set-depth=infinity dir3
-```
+</code></pre>
 
 最后唠叨一句, 上面所有这些内容都不需要服务器的支持. 你可以放心大胆地升级本地的subversion, 而不用理会你的svn服务器的版本.

@@ -1,19 +1,18 @@
 ---
 title:  自编译Kitty支持中文输入
 date:   2018-10-10 20:58 +1000
-lang:   zh
 ref:    kitty-chinese-ime
 ---
 
 
 
-更新: 作者已将文中的patch纳入代码, 并解决了最后一段提到的问题: https://github.com/kovidgoyal/kitty/commit/fca95af49b6bd9ba10228758b7085a2118792e76
+更新: 作者已将文中的patch纳入代码, 并解决了最后一段提到的问题: [https://github.com/kovidgoyal/kitty/commit/fca95af4 ](https://github.com/kovidgoyal/kitty/commit/fca95af4)
 
 前文说了, kitty目前的中文输入有问题. 表现在拼音选字框中选定了字后不会出现在kitty里面. 我之前一直以为这是一个比较底层的问题, 结果发现并不是. 昨天我在翻kitty已经关闭的issue, 看看有没有合适的kitten主意, 想自己写写练练手. 结果看到[这个issue里的讨论](https://github.com/kovidgoyal/kitty/issues/910). 很可惜, 作者不太愿意通过一个简单的hack来实现这个功能, 我能理解他的立场, 毕竟, 输入法的处理本应该在GUI库那一层处理掉, 但是kitty依赖的[glfw一直没能解决好这个问题](https://github.com/glfw/glfw/issues/41)(啧啧, 一个五年前的老issue). 你要一个应用层的东西去处理一个框架级别的缺陷也的确不算合适.
 
 作者自己主要在Linux下做开发工作, 所以他给kitty用的glfw库打了补丁, 支持了ibus. 可惜的是, macOS下的中文输入就只能自食其力了. 换位思考下, 作者第一自己不用中文输入, 第二自己不怎么用macOS, 第三还要维护calibre和kitty, 没时间来搞mac下中文输入这个在他看来吃力不讨好的事情. 而且作者的态度也是很明确的, 这个坑我自己不会去填, 你们谁有意愿去填坑, 而且代码过得去, 那么我乐意接受PR. 可惜我自己从没玩过cocoa编程(现在要我去macOS下玩app开发也不会去学cocoa不是), 所以没能力写代码实现这个功能造福社会了. 不过有人指出, 只要删掉三行代码和中文输入完全无关的代码, 中文输入法的问题也能大致解决了. 所以写了下面这段代码来自己打包kitty:
 
-```bash
+<pre class="code" data-lang="bash"><code>
 #!/bin/bash
 
 # A script to:
@@ -78,7 +77,7 @@ case "$command" in
   *)
     default
 esac
-```
+</code></pre>
 
 打包逻辑只是将[作者的文档](https://sw.kovidgoyal.net/kitty/build.html)代码化而已, 不予赘述. 倒是整体操作的方式值得一提: 我将原始项目fork到自己的命名空间下, 本地加上一个原项目中不存在的`manage`脚本和一个`chinese.patch`文件, 这样, 我还可以完全无障碍地从上游项目将作者最新的改动更新到本地来使用, 也能保证中文输入在所有这些版本中都可用.
 

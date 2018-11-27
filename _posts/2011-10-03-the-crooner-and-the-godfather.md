@@ -1,7 +1,6 @@
 ---
 title:  "伤心情歌手中的教父"
 date:   2011-10-03 11:54 +0800
-lang: zh
 ref:    the-crooner-and-the-godfather
 ---
 

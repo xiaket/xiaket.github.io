@@ -1,13 +1,12 @@
 ---
 title:  "Astng导致的纠结问题一例"
 date:   2012-03-06 16:44 +0800
-lang: zh
 ref:    astng-and-new
 ---
 
 今天干活时出了件蹊跷的事情, 我在调试一个功能时随手写了一个脚本来测试. 脚本的名字是new.py, 内容如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 class A(object):
     def a(self, it):
         print it
@@ -17,28 +16,28 @@ class A(object):
 a = A()
 if a.a("test") == 0:
     print "ok"
-```
+</code></pre>
 
 这个脚本挺简单, 具体逻辑不解释了. 但是在我的机器上运行时输出却比较奇怪, 内容打印了两次:
 
-```bash
+<pre class="code" data-lang="bash"><code>
 [xiaket@bolt:~]python new.py
 test
 ok
 test
 ok
-```
+</code></pre>
 
 然后就纳闷了. 偶首先找来LD, 他给我测了下, 在他的机器上没问题. 我自己也另外找了机器, 都是没问题的. 于是肯定是我本地环境的问题. 然后我看了下我的本地环境变量, 里面除了设置PYTHONPATH外没干别的事情:
 
-```bash
+<pre class="code" data-lang="bash"><code>
 [xiaket@bolt:~]export | grep python
 declare -x PYTHONPATH="/home/xiaket/.xiaket/python:/home/xiaket/.xiaket/python/lib:/home/xiaket/.xiaket/python:/home/xiaket/.xiaket/python/lib"
-```
+</code></pre>
 
 那么应该不是环境变量之类的问题. 老老实实打开调试:
 
-```python
+<pre class="code" data-lang="python"><code>
 # installing zipimport hook
 import zipimport # builtin
 # installed zipimport hook
@@ -93,11 +92,11 @@ ok
 # ... More lines omitted here ...
 # cleanup ints: 18 unfreed ints
 # cleanup floats
-```
+</code></pre>
 
 可见, 在前期调用中, new被import了一次, 由此导致了输出被打印两次的问题. new.py这个文件本身是python的一部分, 文件位置在/usr/lib/python2.6/new.py, 内容如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 """Create new objects of various types.  Deprecated.
 
 This module is no longer required except for backward compatibility.
@@ -119,20 +118,20 @@ try:
     from types import CodeType as code
 except ImportError:
     pass
-```
+</code></pre>
 
 从文件内容和注释我们可以看到, 这个文件只是为了兼容目的而存在的. 无论如何, 我们先删除这个文件, 也将/home/xiaket/new.py重命名一下, 看看哪儿会报错:
 
-```
+<pre class="code"><code>
 [xiaket@bolt:~]python t.py
 'import site' failed; use -v for traceback
 test
 ok
-```
+</code></pre>
 
 python已经提示我们了. import site这一步有问题. 于是再次打开-v调试. 中间一段报错截取如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 'import site' failed; traceback:
 Traceback (most recent call last):
   File "/usr/lib/python2.6/site.py", line 525, in <module>
@@ -147,11 +146,11 @@ Traceback (most recent call last):
     exec line
   File "<string>", line 1, in <module>
 ImportError: No module named new
-```
+</code></pre>
 
 site.py是一个python模块. 直接往里面插代码打印调试信息, 找到了罪魁. 具体文件是logilab_astng-0.21.1-py2.6-nspkg.pth. 这个文件是我为了满足pylint的依赖关系而安装的一个包, 这个pth具体内容整理后如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 import sys, new, os
 
 p = os.path.join(sys._getframe(1).f_locals['sitedir'], *('logilab',))
@@ -159,6 +158,6 @@ ie = os.path.exists(os.path.join(p,'__init__.py'))
 m = not ie and sys.modules.setdefault('logilab',new.module('logilab'))
 mp = (m or []) and m.__dict__.setdefault('__path__',[])
 (p not in mp) and mp.append(p)
-```
+</code></pre>
 
 这段具体做了什么我懒得跟了. 我很烦这种把一个公司当做目录来搞的行为, 我重命名后跑pylint没啥问题, 于是就删除了这个文件. 另外把`logilab_common-0.56.0-py2.6-nspkg.pth`这个文件也干掉了, 处理完之后就没问题了.

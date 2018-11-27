@@ -1,7 +1,6 @@
 ---
 title:  "Bottle对HTTP请求的处理"
 date:   2012-01-02 15:43 +0800
-lang: zh
 ref:    bottle-source-analysis
 ---
 
@@ -27,7 +26,7 @@ ref:    bottle-source-analysis
 
 由于有实例化的部分, 我们得先看看这段. 一旦你要从bottle.py中引入一个名字到你自己的模块, 这些代码就得执行一遍. 除了那些对变量的定义外, 这一段做了下面几件事情:
 
-```python
+<pre class="code" data-lang="python"><code>
 def make_default_app_wrapper(name):
     ''' Return a callable that relays calls to the current default app. '''
     @functools.wraps(getattr(Bottle, name))
@@ -54,7 +53,7 @@ local = threading.local()
 # BC: 0.6.4 and needed for run()
 app = default_app = AppStack()
 app.push()
-```
+</code></pre>
 
 前面这段修改`globals()`是用`make_default_app_wrapper`这个函数将`Bottle`中的这些装饰器放到全局命名空间里来. 例如, 你原本需要写`@app.get`, 现在写成`@get`就行了. 后面这段注释已经说得很明白了, 我就不再多说.
 
@@ -62,7 +61,7 @@ app.push()
 
 为了分析HTTP请求的处理. 我们从wsgi脚本开始看. 我本地一个wsgi脚本的内容如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 #coding=utf-8
 import sys
 
@@ -70,13 +69,13 @@ import sys
 sys.path.append('/home/apache/suisuinian')
 
 from suisuinian.views import app as application
-```
+</code></pre>
 
 这一段一定程度上模仿了`Django`的将项目目录加入`sys.path`的做法. `Bottle`官方文档里面的做法是将当前工作路径切到wsgi脚本所在的文件夹, 这一点, 虽然我完全能够理解其目的, 我个人不太欣赏.
 
 我们就从这儿开始我们的旅程, apache重启后, wsgi线程还没有启动. 这时, 我们向服务器发起一个HTTP请求, 则会执行这个wsgi脚本. 这个脚本做的事情不外设置路径和从视图函数中导入`application`这个对象. 视图函数是这么写的:
 
-```python
+<pre class="code" data-lang="python"><code>
 from bottle import app
 
 app = app()
@@ -85,11 +84,11 @@ app = app()
 def test():
     # display a test string.
     return 'test'
-```
+</code></pre>
 
 这一段代码从`bottle.py`中拿出`AppStack`, 并从中拿出初始化过的`Bottle`实例, 再重命名为`app`, 我们首先看看`AppStack`的具体逻辑:
 
-```python
+<pre class="code" data-lang="python"><code>
 class AppStack(list):
     """ A stack-like list. Calling it returns the head of the stack. """
 
@@ -103,7 +102,7 @@ class AppStack(list):
             value = Bottle()
             self.append(value)
         return value
-```
+</code></pre>
 
 前面说了, 在从`bottle.py`导出模块时就会执行一段代码, 包括`AppStack`的实例化和对其进行`push`操作. `AppStack`的实例化就是对一个列表的实例化, 参数为空, 所以此时列表也为空. 进行`push`操作时, 如果参数和我们现在一样为空, 则会实例化一个新的`Bottle`对象. 最后, 我们将这个对象(或者命令行下给出的另一个`Bottle`实例)放到栈顶. 如我们前面的代码所示, 我们会在视图中调用`AppStack`的`__call__`方法, 拿到这个默认的`Bottle`实例.
 
@@ -111,7 +110,7 @@ class AppStack(list):
 
 接下来, 我们看看`Bottle`的实例化过程具体做了什么:
 
-```python
+<pre class="code" data-lang="python"><code>
 class Bottle(object):
     """ WSGI application """
     def __init__(self, catchall=True, autojson=True, config=None):
@@ -129,11 +128,11 @@ class Bottle(object):
         if autojson:
             self.install(JSONPlugin())
         self.install(TemplatePlugin())
-```
+</code></pre>
 
 先从整体看看这个初始化的过程. 整个过程中定义了若干个容器来放`app`的属性, 包括插件, URL映射表等等. `Bottle`的实例化过程中实例化了一个`Router`对象. `Router`的核心实例化代码为:
 
-```python
+<pre class="code" data-lang="python"><code>
 class Router(object):
     def __init__(self):
         self.rules    = {} # A {rule: Rule} mapping
@@ -142,7 +141,7 @@ class Router(object):
         self.dynamic  = [] # Cache for dynamic routes. See _compile()
         self.filters = {'re': self.re_filter, 'int': self.int_filter,
                         'float': self.float_filter, 'path': self.path_filter}
-```
+</code></pre>
 
 可以看出, `Router`就是URL映射器了.
 
@@ -159,7 +158,7 @@ class Router(object):
 
 好吧, 到现在, 我们已经完成`bottle.py`的初始化了, 我们的视图函数可以正常地载入`app`这个对象了. 接下来, 它兴致盎然地完成了`app = app()`这一步. 我们之前看过`AppStack`的代码, 知道这一步会用一个`Bottle`对象替换一个`AppStack`对象. 用这种名字替换是会让人引起混乱的, 这一方面是我的错, 另一方面, 代码中这一点也够混乱. 为了让你看得更清楚一点, 我将视图函数的内容改写在下面:
 
-```python
+<pre class="code" data-lang="python"><code>
 from bottle import app as appstack_obj
 
 app = appstack_obj()
@@ -168,11 +167,11 @@ app = appstack_obj()
 def test():
     # display a test string.
     return "test"
-```
+</code></pre>
 
 到这儿, 我们已经处理完了`app`相关的逻辑, 但是在我们的wsgi脚本完成对`app`这个对象的载入前, python还会处理后面函数的初始化(虽然没有执行). 在这个过程中, url映射关系被放进了`Bottle`对象中. 具体我们来看`app.get`方法. 这个方法要和`app.route`一起看:
 
-```python
+<pre class="code" data-lang="python"><code>
 def get(self, path=None, method='GET', **options):
     """ Equals :meth:`route`. """
     return self.route(path, method, **options)
@@ -196,7 +195,7 @@ def route(self, path=None, method='GET', callback=None, name=None,
                 if DEBUG: route.prepare()
         return callback
     return decorator(callback) if callback else decorator
-```
+</code></pre>
 
 按照我们的视图函数, 传递给`route`这个方法的参数中`path`是`'/test'`, `method`是`'GET'`, `callback`是`None`. 到`decorator`时, `callback`是被装饰器包裹的函数, `test`. 后面基本是顺理成章的了: 实例化一个`Route`对象, 并将其加入`app`的路由表.
 
@@ -206,15 +205,15 @@ def route(self, path=None, method='GET', callback=None, name=None,
 
 HTTP请求是通过Bottle对象的__call__方法完成的:
 
-```python
+<pre class="code" data-lang="python"><code>
 def __call__(self, environ, start_response):
     ''' Each instance of :class:'Bottle' is a WSGI application. '''
     return self.wsgi(environ, start_response)
-```
+</code></pre>
 
 实际上是调用了`self.wsgi`方法, 去掉异常处理后, 其核心代码如下:
 
-```python
+<pre class="code" data-lang="python"><code>
 def wsgi(self, environ, start_response):
     """ The bottle WSGI-interface. """
     environ['bottle.app'] = self
@@ -228,11 +227,11 @@ def wsgi(self, environ, start_response):
         out = []
     start_response(response._status_line, list(response.iter_headers()))
     return out
-```
+</code></pre>
 
 `request`这个变量是我们之前说过的, `bottle.py`文件结尾处实例化的`LocalRequest`对象. 具体的`bind`方法实际上执行了`BaseRequest`这个类的初始化方法:
 
-```python
+<pre class="code" data-lang="python"><code>
 class BaseRequest(DictMixin):
     """ A wrapper for WSGI environment dictionaries that adds a lot of
             convenient access methods and properties. Most of them are read-only."""
@@ -248,7 +247,7 @@ class BaseRequest(DictMixin):
         #: All other attributes actually are read-only properties.
         self.environ = environ
         environ['bottle.request'] = self
-```
+</code></pre>
 
 好似除了将初始化参数提供给一个类变量, 并添加了一个属性外, 没做啥事情. 字典中的值都是按需读取的. `DictMixin`提供一个字典的骨架, 具体可以参考python官方文档. 顺口说一句, 这儿的`MAX_PARAMS`设置能够避免前几天热议的hash碰撞攻击.
 
@@ -256,7 +255,7 @@ class BaseRequest(DictMixin):
 
 我们先看看要给`_cast`方法传递参数的`_handle`方法:
 
-```python
+<pre class="code" data-lang="python"><code>
 def _handle(self, environ):
     try:
         route, args = self.router.match(environ)
@@ -275,11 +274,11 @@ def _handle(self, environ):
         stacktrace = format_exc(10)
         environ['wsgi.errors'].write(stacktrace)
         return HTTPError(500, "Internal Server Error", e, stacktrace)
-```
+</code></pre>
 
 这一段里用`Router`实例做了url匹配, 于是再跟过去看看:
 
-```python
+<pre class="code" data-lang="python"><code>
 def match(self, environ):
     ''' Return a (target, url_agrs) tuple or raise HTTPError(400/404/405). '''
     path, targets, urlargs = environ['PATH_INFO'] or '/', None, {}
@@ -307,7 +306,7 @@ def match(self, environ):
         allowed.append('HEAD')
     raise HTTPError(405, "Method not allowed.",
                     header=[('Allow',",".join(allowed))])
-```
+</code></pre>
 
 这一段虽然比较长, 逻辑也比较复杂, 但是在官方文档的1.2.4节路由顺序(Routing Order)中已经有讲解, 此文从略. 匹配到适当的处理函数后, `_handle`函数中调用了对应的函数并返回.
 

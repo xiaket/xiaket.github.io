@@ -1,7 +1,6 @@
 ---
 title:  "家政实验报告: mint的使用"
 date:   2012-02-28 22:58 +0800
-lang: zh
 ref:    mint-report
 ---
 

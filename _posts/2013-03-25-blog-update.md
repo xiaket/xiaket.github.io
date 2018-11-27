@@ -1,7 +1,6 @@
 ---
 title:  "这次折腾博客后台所玩过的东西"
 date:   2013-03-25 22:45 +0800
-lang: zh
 ref:    blog-update
 ---
 
@@ -31,7 +30,7 @@ ref:    blog-update
 
 这个工作实际上很容易进行. mako的关于这一部分的文档链接是: [http://docs.makotemplates.org/en/latest/syntax.html#include](http://docs.makotemplates.org/en/latest/syntax.html#include). 按照文档试过几次就没什么问题了. 我现在的base.template类似:
 
-```html
+<pre class="code" data-lang="html"><code>
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,16 +53,16 @@ ${self.body()}
 </div>
 </body>
 </html>
-```
+</code></pre>
 
 而具体到单篇文章, 它的模板就很简单了:
 
-```html
+<pre class="code" data-lang="html"><code>
 <%inherit file="base.template"/>
 <h2>${title}</h2>
 <h4 class="pub_date silver">${date}
 ${body}
-```
+</code></pre>
 
 #### 添加样式
 
@@ -111,7 +110,7 @@ HTML的编写方面没什么好多谈的. 除了前面的模板外基本没改�
 
 其余的不多说, 贴两段图片处理的代码:
 
-```python
+<pre class="code" data-lang="python"><code>
     self.exif = {
         ExifTags.TAGS[key]: value
         for key, value in self.img_obj._getexif().items()
@@ -122,11 +121,11 @@ HTML的编写方面没什么好多谈的. 除了前面的模板外基本没改�
         "%Y:%m:%d %H:%M:%S",
     )
     self.date = self.date.strftime("%Y%m%d-%H%M%S")
-```
+</code></pre>
 
 前一半是拿到照片所有的EXIF信息, 后面是拿出其中的拍摄时间, 并转成我所需要的时间字符串.
 
-```python
+<pre class="code" data-lang="python"><code>
     def write_small(self):
         # calculate new size.
         if self.is_landscape:
@@ -175,7 +174,7 @@ HTML的编写方面没什么好多谈的. 除了前面的模板外基本没改�
             quality=100, optimize=True,
             progressive=True,
         )
-```
+</code></pre>
 
 这个函数略长一点儿. 大概依次做了下面这几件事情:
 
@@ -190,7 +189,7 @@ HTML的编写方面没什么好多谈的. 除了前面的模板外基本没改�
 
 我首先考虑了移动设备上滑动翻页的需求, 找到了<a href="http://swipejs.com">Swipejs</a>, 这个js库能够做这个事情. 于是, 不多想了, 后面的开发都是基于这个库进行的. 浏览器里的链接刷新问题可以用锚点解决. 我用类似下面的js实现了对URL的解析, 拿到用户所希望看到的相册和图片:
 
-```javascript
+<pre class="code" data-lang="javascript"><code>
 function parse_url(){
   // parse anchor in url, find requested album name and photo_position;
   var url = $(location).attr('href');
@@ -213,19 +212,19 @@ function parse_url(){
   };
   return position;
 }
-```
+</code></pre>
 
 思路很简单, 就是拿到当前链接后用js做一下字符串处理而已. 另外我显然也需要在每次图片载入完毕后更新URL:
 
-```javascript
+<pre class="code" data-lang="javascript"><code>
 window.location.href = "#" + album_name + "_" + selected_album.getPos();
-```
+</code></pre>
 
 这样, 我就成功地把后端的活放到前端用javascript干. 接下来, 我来实现页面切换的功能. 前面说了, 我会用swipejs, 于是在移动设备下的切换可以忽略了. 而对于没有swipe事件的普通电脑浏览器而言, 我们要做的还有不少.
 
 我本来设想将一个a元素放到swipe的类里面, a里面再放img元素, 加载图片. 为实现按需加载, 可以动态的根据swipe提供的接口来改变img元素的src属性. 这样做的好处是我可以简单地设定一个map来把上一页, 下一页的超链接映射到图片上, 这个方案很自然. 不好的地方在于对于移动设备, 这个相册的宽度不容易做到自适应. 我得对于每个设备宽度写图片宽度设置. 最后我采用的方案是把图片设为一个div的背景图. 这样我对于移动端只需要设定整个页面宽度就可以了, 不用再去处理这个细节. 不足之处是无法使用map来映射超链接, 不过这个问题也能够得到解决:
 
-```javascript
+<pre class="code" data-lang="javascript"><code>
   // add click events to navigate through slides.
   $("#selected_album div[imgsrc]").unbind('click');
   $(_element).click(function(e) {
@@ -237,7 +236,7 @@ window.location.href = "#" + album_name + "_" + selected_album.getPos();
       selected_album.prev();
     }
   });
-```
+</code></pre>
 
 上面这段代码就是通过读到鼠标在当前div上的相对位置而算出在现在这个地方点击是跳到上一页还是下一页.
 

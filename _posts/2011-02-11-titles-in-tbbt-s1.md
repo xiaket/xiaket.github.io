@@ -1,7 +1,6 @@
 ---
 title:  "生活大爆炸第一季剧名集解"
 date:   2011-02-11 22:19 +0800
-lang: zh
 ref:    titles-in-tbbt-s1
 ---
 

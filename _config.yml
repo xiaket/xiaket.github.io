@@ -27,7 +27,7 @@ defaults:
   -
     values:
       layout: "post"
-      lang: "en"
+      lang: "lang-zh-hans"
 
 m17n:
   en:
