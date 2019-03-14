@@ -5,7 +5,7 @@ description: Some experiments from the APUE book using Python and golang.
 lang: en
 ---
 
-I have been reading Advanced Programming in Unix Experiments these days, and I enjoyed the exposure to system APIs. As an infrastructure engineer, I don't think I'll have lots of chance to use these APIs directly, but they will give me a better understanding of how UNIX works, and make me a better engineer. All the sample code in the book was written in C, and I had re-written some of these in either Python or golang, so as to gain some hands on experience with these APIs.
+I have been reading Advanced Programming in Unix Environment these days, and I enjoyed the exposure to system APIs. As an infrastructure engineer, I don't think I'll have lots of chance to use these APIs directly, but they will give me a better understanding of how UNIX works, and make me a better engineer. All the sample code in the book was written in C, and I had re-written some of these in either Python or golang, so as to gain some hands on experience with these APIs.
 
 ### Sparse File
 
@@ -165,7 +165,7 @@ for root, dirs, files in os.walk(sys.argv[1]):
 print(type_counter)
 </code></pre>
 
-You'll have to run it as `sudo ./ftw.py` and you could be asked confirmation on giving your terminal access to Contact/Photo etc. The result on my mac is:
+You'll have to run it as `sudo ./ftw.py` and you could be asked for confirmation on giving your terminal access to Contact/Photo etc. The result on my mac is:
 
 File type | Count | Percentage
 --------- | ----- | ----------
