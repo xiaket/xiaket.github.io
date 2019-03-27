@@ -111,6 +111,6 @@ However, please note some of the caveats here:
 * I've used some fancy characters for the flags, I hope with your font of choice, your terminal emulator would be able to display them correctly.
 * I've used a very naive way (search for `.git` directory) to detect whether we are inside a git repo or a git tree, so it could be wrong.
 
-The result would look like [this](https://asciinema.org/a/P2xARPZvKP8LWcV0SoXKnyg9Y)
+The result would look like [this](https://asciinema.org/a/g03MQikLqBg8UcHBCd5yPFJB3)
 
 Hope you'll find this useful.
