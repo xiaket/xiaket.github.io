@@ -1,0 +1,24 @@
+---
+title:  The curious incident of an ssh agent with multiple deploy keys
+date:   2020-03-23 17:05
+lang:   en
+ref:    ssh-agent-multiple-deploy-keys
+---
+
+Recently, we are trying to secure our setup of Buildkite. We are not too comfortable with that [default S3 based secret storage plugin](https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks), so we are rolling our own based on AWS parameter store. This article will describe what we bumped into when we were trying to do the setup of this new plugin.
+
+One of the many pain points that we had with that S3 based secret plugin is, you cannot control who has access to that bucket. If you follow the default setup instructions, nothing is stopping a bad actor who has access to your Buildkite to download all the secrets. Moreover, when I joined my current company last July, the wiki page is encouraging everyone to re-use the same deploy key for all projects. So one of the first things I've done is to create a buildkite pipeline that will generate an SSH keypair, save the private part to a directory in that S3 bucket and show the public part in the pipeline output, so people can use that to set up the deploy key in Bitbucket(Bitbucket call it access key, but I'll follow Github's naming convention and call it deploy key in this article).
+
+However, this pipeline will only solve half the problem, because we had a bunch of buildkite plugins internally, and we need a separate ssh key to check them out. With a new key generated, it has to be added to that buildkite plugins projects to allow checking out the buildkite plugin. This is not looking good. In a sense, it's messier than before, and we still haven't fixed the problem where anyone can read everything in thatS3 bucket.
+
+When we got a chance to re-work on our Buildkite setup, very early on we had planned to create a project-level deploy key for all the buildkite plugins. And that key needs to be global so all the pipelines should be able to check out any plugin. One of the other decisions that we've made is to create three agent queues. The infra level pipelines will use the infra queue, the CDE(Card Data Environment) pipelines will use the CDE queue, and the others will use the default queue. In the IAM setup, we have created three managed instance policies, so for the `ssm:GetParameter*` API call, we will only allow the default queue to access parameters in `/vendors/buildkite/default/` namespace, and vice versa for the other two queues.
+
+With the SSM based queue in place, we have reduced the setup time by 8 seconds. Buildkite used to need around 10 seconds to retrieve various files from S3, now it will only take 1 second do get all the required secrets.
+
+So long for the very lengthy background. What we bump into in last week was a curious case that one of the deploy pipeline steps will fail. That particular step needs to checkout source code and then checkout a buildkite plugin to verify things. We had verified that the ssh key was loaded into the ssh-agent, and the keys saved into the ssh-agent are correct because when we test locally with that key, we can retrieve the repos without issue. Why it will fail either at the code checkout or the plugin checkout then?
+
+We first thought this is a git bug, in that it is not using all the keys in the agent to establish the ssh connection. we looked at [the ssh connect logic in git](https://github.com/git/git/blob/master/connect.c) in vain. There's not much to see there, git is simply using SSH as a transport protocol. After that, we looked at the verbose output of a git clone process by setting `GIT_SSH_COMMAND="ssh -vvv"`, then we begin to see why.
+
+As I've said, git will just use SSH as a transport protocol. From the viewpoint of ssh, it knows nothing of its payload, it was only trying to connect to a certain host with keys in the agent. However, all the deploy keys are valid for that ssh connection. So, what will happen here is SSH tries the first key, established a connection. From the ssh client's eyes, everything is working alright and gave the control back to git, Then, git checkout/clone command was issued, the remote server(Bitbucket or Github) will raise a permission denied error. This will fail the whole thing and ultimately cause git to throw an error. Consequently, ssh will only try the first key. If that failed, all the other deploy keys will be ignored.
+
+Our workaround for this problem is to start separate SSH agents in the plugin, one for the buildkite plugin project and the other for the repo that's being tested/built, and set up different environment variables for each of them. And do another pre-checkout/post-checkout hook to use the right agent for the right repo. This is not ideal but certainly worked for now.
