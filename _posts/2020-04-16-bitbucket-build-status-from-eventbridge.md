@@ -1,4 +1,9 @@
-# Bitbucket build status update from Buildkite via Eventbridge
+---
+title:  Bitbucket build status update from Buildkite via Eventbridge
+date:   2020-04-16 08:17
+lang:   en
+ref:    bitbucket-build-status-from-eventbridge
+---
 
 Recently, we have migrated all our buildkite pipelines from one organization to another, so we had a chance to look back and improve our setup. One of the many things we've done differently this time is the build notification. What we are expecting from this feature is after a build has finished, our Bitbucket needs to know whether it's successful or not. We used to have a lambda function behind an AWS API Gateway, and this lambda will receive a post-build payload from Buildkite, do some transformation, then do another API call to update the build status in Bitbucket. This solution certainly had worked for us for quite some time, but we are not completely comfortable with this approach, in that we need to provide a publicly accessible API endpoint that has access to our repository. Buildkite had provided some protection by sending a unique token in the header that you can check, but in general, it still feels wrong.
 
