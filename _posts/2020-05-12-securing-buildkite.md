@@ -1,4 +1,9 @@
-# Securing Buildkite
+---
+title:  Securing Buildkite
+date:   2020-05-12 18:48
+lang:   en
+ref:    securing-buildkite
+---
 
 During a recent BAU mission, we set out to migrate our AWS/Buildkite to a new environment. This gave us a chance to look back to what we had done with our Buildkite setup in AWS, and we have improved/redone some of the setups so that the whole system is more secure and hopefully easier to use. This article describes our practices and hopes you can find some of the patterns in this article helpful.
 
