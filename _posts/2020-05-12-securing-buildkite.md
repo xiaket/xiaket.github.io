@@ -212,8 +212,6 @@ We then looked at the lambda integration and pondered for a while, and finally d
 
 We settled down with a firehose delivery stream to an S3 bucket for now, and it's happily delivering all the logs to that S3 bucket. However, this is not the final state we want, in that we don't have the build creator in the events, so from an audit point of view, this is still incomplete. However, as there is a UUID for the pipeline/step in the events, which can serve as an indirect reference to the build creator. We could set up a lambda that will do the event transformation that can read the build creator from buildkite API, and come up with a nice, easy to consume audit log, but at this stage, we do not see a lot of benefit from this.
 
-I hope you can endure one last piece of rant. as of today, we don't have any automation support for partner eventbridge, be it Cloudformation or CLI, which is a shame. What I did was to create all the other pieces in Cloudformation and had to create the event rule manually in AWS Console.
-
 ## Summary
 
 This project was largely done by [mikeknox](https://github.com/mikeknox) and [xiaket](https://github.com/xiaket), with some suggestions from [achakote](https://github.com/achakote) and [wezlu](https://github.com/wezlu). Please reach out to us if you have any questions/suggestions! We'll be happy to hear from you and help you out.

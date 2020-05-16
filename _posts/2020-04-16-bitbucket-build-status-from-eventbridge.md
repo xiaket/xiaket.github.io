@@ -34,14 +34,46 @@ def handler(event, context):
 
 In this lambda handler, the event would look like what we have in [the example](https://buildkite.com/docs/integrations/amazon-eventbridge#events-build-started). In our production codebase, we have a check to verify that this lambda is getting the two expected events. Most likely, one more thing that you need to do here is to ignore a build that is triggered from Web UI with commit ID set to `HEAD`, as this does not make sense to [Bitbucket API](https://developer.atlassian.com/server/bitbucket/how-tos/updating-build-status-for-commits/). One last thing that we have chosen to do is to ignore `trigger_job`, as we have some pipelines that get triggered by the main build pipeline, they check out the same codebase, and we choose not to let these children interrupt what their parent is building. We will not talk much about the `get_payload` function in the code snippet above, because that's very Bitbucket specific and easy to implement. We are retrieving the Bitbucket access secrets from the AWS parameter store. So we need to define some extra permissions for the lambda role in our Cloudformation stack.
 
-For now, our Cloudformation stack has two resources, one lambda role, and one lambda function. We do hope we can declare the rest of the solution using Cloudformation, but for now, that's not feasible, because AWS partner eventbridge does not even have cli support yet. Hence we have to do the rest of the setup manually. From now on, we will assume that you have [setup your Eventbridge integration in your AWS account](https://buildkite.com/docs/integrations/amazon-eventbridge#configuring).
+For now, our Cloudformation stack has two resources, one lambda role, and one lambda function. Natually the next thing to do is to add a rule to link the event bus with the lambda function. We need two more resources here, one rule and one lambda permission so event bus can invoke our lambda. The rule will look like this:
 
-In the AWS console, go to AWS Eventbridge, create a new rule that looks like this:
+```
+  BuildNotificationRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Update build status in Bitbucket via a Lambda
+      EventBusName: !Ref BuildkiteEventbusName
+      EventPattern:
+        account:
+        - !Sub "${AWS::AccountId}"
+        detail-type:
+        - "Build Started"
+        - "Build Finished"
+      Targets:
+        - Arn: !GetAtt LambdaFunction.Arn
+          Id: bitbucket-ci-status-update
+```
 
-![eventbridge-setup-for-buildkite-build-events-1](/media/2020/eventbridge-setup-for-buildkite-build-events-1.png)
+and the lambda permission will look like:
 
-The second half of the rule setup should look like this:
+```
+  PermissionForEventsToInvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LambdaFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt BuildNotificationRule.Arn
+```
 
-![eventbridge-setup-for-buildkite-build-events-2](/media/2020/eventbridge-setup-for-buildkite-build-events-2.png)
+I think I should offer one more pattern for the cloudformation template here, as you can see, we need to provide a parameter to the `BuildNotificationRule`. As this is a very long string, we do not really want to hard-code that in our template or deploy script. The approach I've taken is to store it in parameter store, and expose that to the Cloudformation as:
 
-As you can see, we just need to create the link between the partner eventbridge with the lambda we have created. After this, be sure to test your solution by triggering some builds in Buildkite and look at the logs in Cloudwatch. I don't believe this is mission-critical so I have not bothered to create a dead letter queue for the lambda, please feel free to add that to your setup if you feel otherwise.
+```
+  BuildkiteEventbusName:
+    Description: Name of the partner event bus
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: "/vendors/buildkite/event-bus-name"
+```
+
+And of course, you should save your event-bus-name(which should look like `aws.partner/buildkite.com/org-slug/ffd21740-9309-4f60-b3cf-b3de4d768b0b`) as plaintext to `/vendors/buildkite/event-bus-name`.
+
+Viola, everything should just work. Be sure to test your solution by triggering some builds in Buildkite and look at the logs in Cloudwatch. I don't believe this is mission-critical so I have not bothered to create a dead letter queue for the lambda, please feel free to add that to your setup if you feel otherwise.
