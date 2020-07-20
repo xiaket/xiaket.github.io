@@ -6,7 +6,6 @@ url: "https://xiaket.github.io"
 twitter_username: xiaket
 github_username:  xiaket
 permalink: /:year/:title:output_ext
-google_analytics: UA-119160918-1
 timezone: Australia/Melbourne
 
 # Build settings
