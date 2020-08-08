@@ -1,5 +1,5 @@
 ---
-title:  Delete default VPC in new Accounts using Stackset in a safe way
+title:  Delete default VPC in AWS Accounts using Stackset in a safe way
 date:   2020-08-08 13:44
 lang:   en
 ref:    delete-default-vpc-using-stackset
@@ -128,7 +128,7 @@ for role_name in roles:
 
 The `creds` here comes from the `assume_role` call in the last section. we use these credentials to create the new iam client, which will in turn use the new role. The `lambda_role` is the arn of the original lambda role(`RoleCleanupLambdaRole`), which is obtained from introspection. We need to remove the policies in this role, but not to remove the role itself, because we still need to run this function when we delete the custom resource. For the roles that come from the user input in the custom resource, we will remove the inline policies first, then detach the managed policies and finally remove the role.
 
-## IAM Role assigned to `RoleCleanupLambdaRole`
+## Permissions in `RoleCleanupLambdaRole`
 
 Apart from the managed `AWSLambdaBasicExecutionRole`, we need to add two more inline policies to `RoleCleanupLambdaRole`:
 
