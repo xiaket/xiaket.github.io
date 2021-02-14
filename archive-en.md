@@ -2,8 +2,10 @@
 layout: default
 ---
 
+{% assign posts = site.posts | where: "lang", "en" %}
+
 <article>
-  {% for post in site.posts %}
+  {% for post in posts %}
   {% assign currentdate = post.date | date: "%Y" %}
   {% if currentdate != date %}
     {% unless forloop.first %}</ol>{% endunless %}
