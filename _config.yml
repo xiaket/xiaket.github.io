@@ -17,6 +17,7 @@ kramdown:
 # minima is just a placeholder here. We are not using it.
 theme: minima
 plugins:
+  - jekyll-sitemap
   - jekyll-feed
   - jekyll-seo-tag
 
