@@ -1,2 +1,4 @@
 User-agent: *
 Disallow: /media/
+
+Sitemap: https://blog.xiaket.org/sitemap.xml
