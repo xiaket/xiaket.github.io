@@ -39,7 +39,6 @@ Default:
     - us-west-2
 
 Scopes:
-  # other scope definitions
   dev:
     organization_unit: Dev
     create_vpc: true
@@ -48,14 +47,19 @@ Scopes:
       all: Admin
       rw: PowerUser,Developer
 
+  # other scope definitions
+  # ...
+
 Accounts:
-  # other accounts
   foo:                   # An internal readable name of the account
     service: foo         # Name of the service residing in this account
     scope: dev           # Account scope that we have talked about.
     region: us-east-1    # The primary region of the account.
     create_vpc: false    # Do not create default vpc for this account.
     use_cfr: true        # Will send Cloudfront logs to a central bucket.
+
+  # other account definitions
+  # ...
 ```
 
 We first define organization level default values(Defaulting AWS region to Sydney, do not create vpc, etc.). Then we define scope level options(AWS access pattern, create vpc for dev accounts, etc.). After that, it is a long list of AWS account as a dictionary. For each account, it will inherit the default options from the root level and then OU level options, also we can do the override at the account level. In the above example, this account with internal name `foo` will inherit a bunch of other flags from `Default` and the `dev` scope. However, as we have set `create_vpc` to `false` at the account level, we will not create a VPC.
@@ -139,7 +143,7 @@ Apart from the common event rules that we have defined in the stackset, we need 
 
 ### Sending & Receiving Message
 
-With current eventbridge feature set, we cannot do cross account message sending directly. That is, we cannot send a message directly to trigger a lambda in another account. Instead, we must have a rule on the eventbus to forward the message to the bespoke account, and on the receiver end, match the message with some rule and then trigger a lambda.  In this section, I will walk you through the whole process.
+With current eventbridge feature set, we cannot do cross account message sending directly. That is, we cannot send a message directly to trigger a lambda in another account. Instead, we must have a rule on the eventbus to forward the message to the bespoke account, and on the receiver end, match the message with some rule and then trigger a lambda. In this section, I will walk you through the whole process.
 
 First, we send a message that looks like:
 
@@ -208,7 +212,7 @@ A few notes here:
 2. Please think twice when you allow an account to receive a message from another account. If the sending account is compromised, you will risk running things in the receiving account.
 3. Please have a nonce token in the requesting message, and the response will send the same token back so we can pick up the right message in the queue.
 
-# Case studies
+## Case studies
 
 We've talked long and ardurously about our setup, let's now direct our focus to a few case studies and hopefully we can demonstrate the strength of this event-driven setup.
 
@@ -303,6 +307,6 @@ With a list of repositories defined in the file, we will generate a Cloudformati
 
 We are also managing our service control policies in this repo, the service control policies are defined in a directory, with the policy name tied to the organization unit that needs this policy. In the main pipeline, we have a step to synchronized what we have defined in our repo with what's enabled in the OU. Please note that it is better to test the service control policy before you deploy it, and that's exactly why we have an organization unit named SCP.
 
-# Summary
+## Summary
 
 In this article, we discussed our way to manage aws accounts/aws organization via code. Please reach out to me if you have any questions/suggestions! We’ll be happy to hear from you and help you out.
