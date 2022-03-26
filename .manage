@@ -1,0 +1,4 @@
+run () {
+  bundler exec jekyll serve
+}
+export -f run
