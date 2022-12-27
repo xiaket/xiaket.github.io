@@ -1,3 +1,20 @@
+:root {
+  --text: #000;
+  --bg: #fff;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #bbb;
+    --bg: #222;
+  }
+}
+
 body{
   padding:20px;
   min-width: 300px;
