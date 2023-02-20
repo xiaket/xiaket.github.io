@@ -1,8 +1,12 @@
 run () {
+  export PATH="/opt/homebrew/opt/ruby@3.1/bin:$PATH"
   bundler exec jekyll serve
 }
 
 init () {
+  brew install -q ruby@3.1
+  export PATH="/opt/homebrew/opt/ruby@3.1/bin:$PATH"
+  gem install bundler:2.3.7
   bundle install
 }
 export -f run
