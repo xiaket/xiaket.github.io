@@ -47,6 +47,10 @@ main{
     backdrop-filter: brightness(1.2) blur(8px);
   }
 }
+blockquote {
+  border-left: 5px solid lightgrey;
+  color: #555;
+}
 article {
   margin-top: 40px;
 }
