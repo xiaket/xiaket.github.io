@@ -39,7 +39,7 @@ function coarse_line(startx, starty, endx, endy, coarseness, segments = 2){
   // 画一条比较粗糙的线条, 具有类似手绘的感觉.
   // coarseness是曲线的不规则程度, segments是用几段曲线来画.
   var x, y, choice, nextx, nexty, dx1, dx2, dy1, dy2, l, lastx, lasty, desc;
-  var desc = `M ${startx} ${starty}, `;
+  var desc = `M ${startx} ${starty} `;
 
   l = Math.sqrt((startx - endx)*(startx - endx) + (starty - endy)*(starty - endy))
 
