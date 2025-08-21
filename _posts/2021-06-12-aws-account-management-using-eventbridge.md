@@ -135,7 +135,7 @@ In the event bus policy, we should allow our CICD account to send messages to al
       StatementId: allow-from-cicd-event-bus
 ```
 
-The tip here is use minimal permission setup that works. Unless this is truely a special case, the account should only accept eventbus message from the cicd account. Another tip that we can offer is to have a logging lambda that matches every event on the eventbus and logs it to an S3 bucket in the audit account
+The tip here is use minimal permission setup that works. Unless this is truly a special case, the account should only accept eventbus message from the cicd account. Another tip that we can offer is to have a logging lambda that matches every event on the eventbus and logs it to an S3 bucket in the audit account
 
 We had deliberately kept this stackset minimal. And we have defined another stackset to deliver the common rules, which allows us to deploy a vpc on demand and distribute some SSM entries to the account.
 

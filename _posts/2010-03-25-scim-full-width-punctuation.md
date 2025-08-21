@@ -5,7 +5,7 @@ ref:    scim-full-width-punctuation
 ---
 
 
-现在我的Slackware上拼音输入法用的是scim, 虽然词库比ibus差些, 但是稳定性还是好不少的. 不过scim-pinyin的全角/半角字符的问题一直让我很纠结. 我习惯了在中文状态下使用英文标点. 但是scim默认打开的时候使用的是全角的中文标点. 为了解决这个问题, 研究了一早上, 通过重新编译scim-pinyin搞定 了这个问题.
+现在我的Slackware上拼音输入法用的是scim, 虽然词库比ibus差些, 但是稳定性还是好不少的. 不过scim-pinyin的全角/半角字符的问题一直让我很纠结. 我习惯了在中文状态下使用英文标点. 但是scim默认打开的时候使用的是全角的中文标点. 为了解决这个问题, 研究了一早上, 通过重新编译scim-pinyin搞定了这个问题.
 
 scim的设置界面(scim-setup)里肯定是没有这个选项的了. 而scim的配置文件`~/.scim/config`是由这个设置界面生成的. 于是, 我们首先要确定有没有什么隐藏的配置选项. 为此, 从sf上拿到scim-pinyin的最新版本`scim-pinyin-0.5.91`, 解包, 研究了下源码, 发现可能的配置选项都是在`src/scim_pinyin_imengine_config_keys.h`文件里. 这个用一下grep, 关键字选择`~/.scim/config`里的相关字符串, 很容易找到. 首先整理下这个里面有的配置项, 再和我的配置文件里已有的配置项比较了下, 发现没有我所需要的选项. 看来必须要重新编译scim-pinyin了.
 

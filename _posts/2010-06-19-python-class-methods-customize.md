@@ -37,7 +37,7 @@ Json这个类只是存放了类的序列化的内容, 为了记录历史, 我们
 <pre class="code" data-lang="python"><code>
 class Jsondiff(object):
     """
-    This object is used to save substraction results from two Json objects.
+    This object is used to save subtraction results from two Json objects.
     """
     def __init__(self, _diffdict):
         """
