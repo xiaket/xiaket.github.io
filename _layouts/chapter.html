@@ -1,0 +1,43 @@
+---
+layout: default
+---
+{% assign chapters = site.novels | where: "novel", page.novel | sort: "order" %}
+{% assign total = chapters | size %}
+{% for chapter in chapters %}
+  {% if chapter.url == page.url %}
+    {% assign curr_idx = forloop.index0 %}
+  {% endif %}
+{% endfor %}
+{% if curr_idx > 0 %}
+  {% assign prev_idx = curr_idx | minus: 1 %}
+  {% assign prev_chapter = chapters[prev_idx] %}
+{% endif %}
+{% assign last_idx = total | minus: 1 %}
+{% if curr_idx < last_idx %}
+  {% assign next_idx = curr_idx | plus: 1 %}
+  {% assign next_chapter = chapters[next_idx] %}
+{% endif %}
+
+  <article class="chapter">
+    <div class="chapter-nav chapter-nav-top">
+      <a href="/novels/{{ page.novel }}/">《{{ page.novel_title }}》目录</a>
+      <span class="chapter-nav-links">
+        {% if prev_chapter %}<a href="{{ prev_chapter.url }}">&larr; {{ prev_chapter.title }}</a>{% endif %}
+        {% if prev_chapter and next_chapter %} &nbsp;|&nbsp; {% endif %}
+        {% if next_chapter %}<a href="{{ next_chapter.url }}">{{ next_chapter.title }} &rarr;</a>{% endif %}
+      </span>
+    </div>
+
+    <h1 id="post_title">{{ page.title | escape }}</h1>
+
+    {{ content }}
+
+    <div class="chapter-nav chapter-nav-bottom">
+      <a href="/novels/{{ page.novel }}/">《{{ page.novel_title }}》目录</a>
+      <span class="chapter-nav-links">
+        {% if prev_chapter %}<a href="{{ prev_chapter.url }}">&larr; {{ prev_chapter.title }}</a>{% endif %}
+        {% if prev_chapter and next_chapter %} &nbsp;|&nbsp; {% endif %}
+        {% if next_chapter %}<a href="{{ next_chapter.url }}">{{ next_chapter.title }} &rarr;</a>{% endif %}
+      </span>
+    </div>
+  </article>

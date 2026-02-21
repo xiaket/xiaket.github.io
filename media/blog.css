@@ -65,3 +65,36 @@ footer p {
   color: #8b8e86;
   font-size: 100%;
 }
+.chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 90%;
+  color: #8b8e86;
+  padding: 8px 0;
+}
+.chapter-nav-top {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 24px;
+}
+.chapter-nav-bottom {
+  border-top: 1px solid #ddd;
+  margin-top: 32px;
+}
+.chapter hr {
+  border: none;
+  height: auto;
+  background: none;
+  text-align: center;
+  margin: 1.5em 0;
+}
+.chapter hr::after {
+  content: "· · ·";
+  color: #8b8e86;
+  letter-spacing: 0.5em;
+}
+@media (prefers-color-scheme: dark) {
+  .chapter-nav-top, .chapter-nav-bottom {
+    border-color: #444;
+  }
+}

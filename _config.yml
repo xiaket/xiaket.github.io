@@ -23,10 +23,21 @@ plugins:
 
 exclude: ["Gemfile", "Gemfile.lock", "manage", "node_modules", "vendor/bundle/", "vendor/cache/", "vendor/gems/", "vendor/ruby/"]
 
+collections:
+  novels:
+    output: true
+    permalink: /novels/:path/
+
 defaults:
   -
     values:
       layout: "post"
+      lang: "lang-zh-hans"
+  -
+    scope:
+      path: "_novels"
+    values:
+      layout: "chapter"
       lang: "lang-zh-hans"
 
 m17n:
