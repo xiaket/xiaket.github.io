@@ -1,28 +1,53 @@
 :root {
-  --text: #000;
+  --text: #333;
   --bg: #fff;
+  --text-muted: #555;
+  --link: #2a7ae2;
+  --link-hover: #1756a9;
+  --code-bg: #e8f4f8;
+  --code-text: #0d4a5f;
+  --code-border: #e0e0e0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #d4d4d4;
+    --bg: #1a1a1a;
+    --text-muted: #999;
+    --link: #6db3f2;
+    --link-hover: #9dcbf7;
+    --code-bg: #2d2d2d;
+    --code-text: #d4d4d4;
+    --code-border: #404040;
+  }
 }
 
 body {
   background-color: var(--bg);
   color: var(--text);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #bbb;
-    --bg: #222;
-  }
-}
-
-body{
-  padding:20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    sans-serif;
+  line-height: 1.85;
+  padding: 20px;
   min-width: 300px;
 }
-main{
-  margin:auto;
+
+main {
+  margin: auto;
   max-width: 600px;
   padding: 40px 0px;
+}
+
+a {
+  color: var(--link);
+}
+a:hover {
+  color: var(--link-hover);
+}
+
+p {
+  margin-bottom: 1.2em;
 }
 #wide-header{
   right: calc(100% + 20px);
@@ -36,20 +61,53 @@ main{
   left: 0px;
   z-index: 1;
 }
+.nav-icon svg {
+  vertical-align: middle;
+}
 #slim-header, footer{
   box-shadow: 0px 1px 3px 2px rgba(0,0,0,0.4);
   width: 100%;
   font-size: 70%;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
 }
-@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-  footer, #slim-header {
-    -webkit-backdrop-filter: brightness(1.2) blur(8px);
-    backdrop-filter: brightness(1.2) blur(8px);
+@media (prefers-color-scheme: dark) {
+  #slim-header, footer {
+    background-color: rgba(26, 26, 26, 0.5);
   }
 }
 blockquote {
   border-left: 5px solid lightgrey;
-  color: #555;
+  color: var(--text-muted);
+  padding-left: 1em;
+  margin: 1.2em 0;
+}
+
+code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 2px;
+  font-size: 0.9em;
+}
+
+pre {
+  background-color: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 6px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.85em;
+  line-height: 1.5;
 }
 article {
   margin-top: 40px;
