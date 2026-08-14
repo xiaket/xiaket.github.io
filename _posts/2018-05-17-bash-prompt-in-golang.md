@@ -65,7 +65,7 @@ func main() {
 }
 </code></pre>
 
-OK, from readablity and speed, I can pick two now. Let's get back to the git issue. There's a good implementation [here](https://github.com/mathiasbynens/dotfiles/blob/master/.bash_prompt). I copied that `prompt_git` function into my bashrc and made some twists to my prompt function, so it would look like this:
+OK, from readability and speed, I can pick two now. Let's get back to the git issue. There's a good implementation [here](https://github.com/mathiasbynens/dotfiles/blob/master/.bash_prompt). I copied that `prompt_git` function into my bashrc and made some twists to my prompt function, so it would look like this:
 
 <pre class="code" data-lang="bash"><code>
 function prompt {

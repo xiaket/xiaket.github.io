@@ -5,7 +5,7 @@ lang:   en
 ref:    aws-account-management-using-eventbridge
 ---
 
-In this article, we are going to present how we manage our AWS accounts via code. We have been running this solution for around a year now, and in one occasion we created 11 new AWS accounts in around 30 mintues in the CICD process.
+In this article, we are going to present how we manage our AWS accounts via code. We have been running this solution for around a year now, and in one occasion we created 11 new AWS accounts in around 30 minutes in the CICD process.
 
 Before we dive into the technical details, I would like to define the problem that we are aiming to solve here: we want to automate the AWS account creation process in a safe way. In any company, when you want to create a new AWS account, you'll need to discuss the requirements/details with your infrastructure experts. They would probably ask you a few questions, then do the account creation either via your internal account vending machine or AWS Control Tower or manually. After that, this expert would probably need to do some more manual work to make sure that this account is ready for you to get in.
 
@@ -64,7 +64,7 @@ Accounts:
 
 We first define organization level default values(Defaulting AWS region to Sydney, do not create vpc, etc.). Then we define scope level options(AWS access pattern, create vpc for dev accounts, etc.). After that, it is a long list of AWS account as a dictionary. For each account, it will inherit the default options from the root level and then OU level options, also we can do the override at the account level. In the above example, this account with internal name `foo` will inherit a bunch of other flags from `Default` and the `dev` scope. However, as we have set `create_vpc` to `false` at the account level, we will not create a VPC.
 
-Regarding the region thing defined at the account level, we have an internal rule that unless it's a very special case, we do not allow any service running in multiple AWS regions. Our default region is define at top level to `ap-southeast-2` and is overriden to `us-east-1` because of Cloudfront requirements.
+Regarding the region thing defined at the account level, we have an internal rule that unless it's a very special case, we do not allow any service running in multiple AWS regions. Our default region is define at top level to `ap-southeast-2` and is overridden to `us-east-1` because of Cloudfront requirements.
 
 ### Eventbridge
 
@@ -214,7 +214,7 @@ A few notes here:
 
 ## Case studies
 
-We've talked long and ardurously about our setup, let's now direct our focus to a few case studies and hopefully we can demonstrate the strength of this event-driven setup.
+We've talked long and arduously about our setup, let's now direct our focus to a few case studies and hopefully we can demonstrate the strength of this event-driven setup.
 
 
 ### The main pipeline
@@ -232,7 +232,7 @@ At this point in time, we have the eventbus created in the new account, and we h
 1. create SSM entries including account tags and some other global info to the new account.
 2. update the IAM mapping stack in `identity` account to allow access to the new account.
 3. Deploy a vpc in the new account. However, it is up to the account to determine whether it needs a vpc so the new account may not receive this `CREATE_VPC` message after all.
-4. Update the S3 bucket stacks in logs account to allow Cloudfront/WAF logs ingess.
+4. Update the S3 bucket stacks in logs account to allow Cloudfront/WAF logs ingress.
 
 After all these process runs through, the new AWS account is ready to use.
 

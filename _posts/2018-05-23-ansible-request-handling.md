@@ -917,7 +917,7 @@ class StrategyModule(StrategyBase):
         return False
 </code></pre>
 
-上面这段代码应该可以算是整个ansbile在任务调度部分的核心代码了. 在我们真正去看每个任务是如何执行的之前, 我们先看下`self._execute_meta`这个方法的逻辑:
+上面这段代码应该可以算是整个ansible在任务调度部分的核心代码了. 在我们真正去看每个任务是如何执行的之前, 我们先看下`self._execute_meta`这个方法的逻辑:
 
 <pre class="code" data-lang="python"><code>
     def _execute_meta(self, task, play_context, iterator):
@@ -1403,7 +1403,7 @@ class ActionModule(ActionBase):
 
 ##### 连接插件
 
-首先是连接插件. ansible所支持的连接插件的路径是`ansible.plugins.connection`. 例如, 我们正常执行命令使用的是系统ssh命令, 但如果使用的是paramiko这个ssh库, 这个命令肯定就不一样了. 又比如, ansible还支持使用Windows Remote Mangement协议来管理远程服务器, 这个时候执行命令是在HTTP/HTTPS上又包装了的一层WinRM. 命令自然也不一样. 我们这儿简单看下ssh这个连接插件的fetch_file方法:
+首先是连接插件. ansible所支持的连接插件的路径是`ansible.plugins.connection`. 例如, 我们正常执行命令使用的是系统ssh命令, 但如果使用的是paramiko这个ssh库, 这个命令肯定就不一样了. 又比如, ansible还支持使用Windows Remote Management协议来管理远程服务器, 这个时候执行命令是在HTTP/HTTPS上又包装了的一层WinRM. 命令自然也不一样. 我们这儿简单看下ssh这个连接插件的fetch_file方法:
 
 <pre class="code" data-lang="python"><code>
     def fetch_file(self, in_path, out_path):

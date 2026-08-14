@@ -7,7 +7,7 @@ ref:    im-not-sheldon
 
 * 我不是Sheldon, Sheldon玩网游, 我不玩.
 * 我不是Sheldon, Sheldon没有Kindle, 我有. :)
-* 我不是Sheldon, Sheldon会说Clingon, 我只会中文.
+* 我不是Sheldon, Sheldon会说Klingon, 我只会中文.
 * 我不是Sheldon, Sheldon喜欢ubuntu, 我喜欢Slackware.
 * 我不是Sheldon, Sheldon用Dell的Alienware, 我用Dell的Vostro.
 * 我不是Sheldon, Sheldon对食物相当挑剔, 我很好养, 基本不挑食.
